@@ -2,7 +2,8 @@
 [![GitHub Discussions](https://img.shields.io/github/discussions/FrankHJCuypers/fuut?style=for-the-badge&logo=github)](https://github.com/FrankHJCuypers/fuut/discussions)
 [![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/FrankHJCuypers/fuut?style=for-the-badge&logo=github)](https://github.com/FrankHJCuypers/fuut/issues)
 
-[![Static Badge](https://img.shields.io/badge/Lua-2C2D72?style=for-the-badge&logo=lua)](https://developer.android.com/kotlin)
+[![Lua](https://img.shields.io/badge/Lua-2C2D72?style=for-the-badge&logo=lua)](https://www.lua.org/)
+[![Static Badge](https://img.shields.io/badge/Wireshark-1679A7?style=for-the-badge&logo=wireshark)](https://www.wireshark.org/)
 
 [![experimental](https://img.shields.io/badge/version-experimental-red)](https://kotlinlang.org/docs/components-stability.html#stability-levels-explained)
 
