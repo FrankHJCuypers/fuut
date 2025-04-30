@@ -1,18 +1,18 @@
 [![maintainer](https://img.shields.io/badge/maintainer-Frank%20HJ%20Cuypers-green?style=for-the-badge&logo=github)](https://github.com/frankhjcuypers)
-[![GitHub Discussions](https://img.shields.io/github/discussions/FrankHJCuypers/Gaai?style=for-the-badge&logo=github)](https://github.com/FrankHJCuypers/Gaai/discussions)
-[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/FrankHJCuypers/Gaai?style=for-the-badge&logo=github)](https://github.com/FrankHJCuypers/Gaai/issues)
+[![GitHub Discussions](https://img.shields.io/github/discussions/FrankHJCuypers/fuut?style=for-the-badge&logo=github)](https://github.com/FrankHJCuypers/fuut/discussions)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/FrankHJCuypers/fuut?style=for-the-badge&logo=github)](https://github.com/FrankHJCuypers/fuut/issues)
 
 [![kotlin](https://img.shields.io/badge/Kotlin-B125EA?style=for-the-badge&logo=kotlin&logoColor=white)](https://developer.android.com/kotlin)
 
 [![experimental](https://img.shields.io/badge/version-experimental-red)](https://kotlinlang.org/docs/components-stability.html#stability-levels-explained)
 
-[![GitHub Release](https://img.shields.io/github/v/release/FrankHJCuypers/Gaai?include_prereleases&display_name=tag&logo=github)](https://github.com/FrankHJCuypers/Gaai/releases)
-[![GitHub Release Date](https://img.shields.io/github/release-date-pre/FrankHJCuypers/Gaai?logo=github)](https://github.com/FrankHJCuypers/Gaai/releases)
-[![GitHub License](https://img.shields.io/github/license/FrankHJCuypers/Gaai?logo=github)](LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/FrankHJCuypers/fuut?include_prereleases&display_name=tag&logo=github)](https://github.com/FrankHJCuypers/fuut/releases)
+[![GitHub Release Date](https://img.shields.io/github/release-date-pre/FrankHJCuypers/fuut?logo=github)](https://github.com/FrankHJCuypers/fuut/releases)
+[![GitHub License](https://img.shields.io/github/license/FrankHJCuypers/fuut?logo=github)](LICENSE)
 
-[![GitHub last commit](https://img.shields.io/github/last-commit/FrankHJCuypers/Gaai?logo=github)](https://github.com/FrankHJCuypers/Gaai/commits)
-[![GitHub contributors](https://img.shields.io/github/contributors/FrankHJCuypers/Gaai?logo=github)](https://github.com/FrankHJCuypers/Gaai/graphs/contributors)
-[![GitHub commit activity (master)](https://img.shields.io/github/commit-activity/y/FrankHJCuypers/Gaai/master?logo=github)](https://github.com/FrankHJCuypers/Gaai/commits/master)
+[![GitHub last commit](https://img.shields.io/github/last-commit/FrankHJCuypers/fuut?logo=github)](https://github.com/FrankHJCuypers/fuut/commits)
+[![GitHub contributors](https://img.shields.io/github/contributors/FrankHJCuypers/fuut?logo=github)](https://github.com/FrankHJCuypers/fuut/graphs/contributors)
+[![GitHub commit activity (master)](https://img.shields.io/github/commit-activity/y/FrankHJCuypers/fuut/master?logo=github)](https://github.com/FrankHJCuypers/fuut/commits/master)
 
 
 # Wireshark Dissector in Lua for Nexxtender charger BLE
