@@ -65,11 +65,6 @@ The following messages are already parsed by `fuut.lua`:
 | NEXXT_GCB | GENERIC  | COMMAND                | Badge  |
 | NEXXT_GCT | GENERIC  | COMMAND                | Time   |
 | NEXXT_GCC | GENERIC  | COMMAND                | Config |
-
-The following messages are not yet parsed by `fuut.lua`:
-
-| Protocol  | Service  | Characteristic         | Type   |
-| --------- | ---------| ---------------------- | ------ |
 | NEXXT_GS  | GENERIC  | STATUS                 |        |
 | NEXXT_GSL | GENERIC  | STATUS                 | Loader |
 | NEXXT_GSE | GENERIC  | STATUS                 | Event  |
@@ -77,6 +72,11 @@ The following messages are not yet parsed by `fuut.lua`:
 | NEXXT_GSB | GENERIC  | STATUS                 | Badge  |
 | NEXXT_GST | GENERIC  | STATUS                 | Time   |
 | NEXXT_GSC | GENERIC  | STATUS                 | Config |
+
+The following messages are not yet parsed by `fuut.lua`:
+
+| Protocol  | Service  | Characteristic         | Type   |
+| --------- | ---------| ---------------------- | ------ |
 | NEXXT_GD  | GENERIC  | DATA                   |        |
 | NEXXT_GDL | GENERIC  | DATA                   | Loader |
 | NEXXT_GDE | GENERIC  | DATA                   | Event  |
@@ -101,11 +101,19 @@ The values parsed by the `fuut.lua` dissector are shown in the Wireshark Packet 
 under the node *Bluetooth Attribute Protocol*, 
 under the subnode that starts with *Nexxtender*.
 
-The NEXXT-\* protocol messages can be filtered out by the following view filter: `_ws.col.protocol contains "NEXXT_"`
+The NEXXT-\* protocol messages can be filtered out in Wireshark by the following view filter: `_ws.col.protocol contains "NEXXT_"`
 
 For more information on the Nexxtender BLE protocol, see 
 [Nexxtender Charger Information, Frank HJ Cuypers](https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information).
-The `fuut.lua` dissector uses the names and values from that document
+The `fuut.lua` dissector uses the names and values from that document.
+
+# Internals
+
+`fuut.lua` extends the Wireshark btgatt dissector from
+[packet-btatt.c](https://gitlab.com/wireshark/wireshark/-/blob/master/epan/dissectors/packet-btatt.c?ref_type=heads).
+It adds dissectors to the *bluetooth.uid* table defined in *proto_reg_handoff_btgatt()*.
+
+
 
 # Links
 
@@ -113,6 +121,7 @@ Useful information can be found at
 
 - [Nexxtender Charger Information, Frank HJ Cuypers](https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information)
 - [Wireshark](https://www.wireshark.org/)
+- [Creating a Wireshark dissector in Lua](https://mika-s.github.io/wireshark/lua/dissector/2017/11/04/creating-a-wireshark-dissector-in-lua-1.html)
 # License
 
 This project is licensed under the GNU AGPLv3 License. See the [LICENSE](LICENSE) file for details.

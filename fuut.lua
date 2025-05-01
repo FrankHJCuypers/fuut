@@ -251,8 +251,8 @@ local loaderOperationValues = {
 	[0x06] = "Stop Charging",
 }
 
-local f_gcl_operationId =  ProtoField.uint8("cgl.operationId", "operationId", base.HEX, loaderOperationValues)
-local f_gcl_operationType = ProtoField.uint8("cgl.operationType", "operationType", base.HEX, genericOperationValues)
+local f_gcl_operationId =  ProtoField.uint8("gcl.operationId", "operationId", base.HEX, loaderOperationValues)
+local f_gcl_operationType = ProtoField.uint8("gcl.operationType", "operationType", base.HEX, genericOperationValues)
 
 p_nexxt_gcl.fields =  {
 	f_gcl_operationId,
@@ -279,8 +279,8 @@ local eventOperationValues = {
 	[0x02] = "Update Status",
 }
 
-local f_gce_operationId =  ProtoField.uint8("cge.operationId", "operationId", base.HEX, eventOperationValues)
-local f_gce_operationType = ProtoField.uint8("cge.operationType", "operationType", base.HEX, genericOperationValues)
+local f_gce_operationId =  ProtoField.uint8("gec.operationId", "operationId", base.HEX, eventOperationValues)
+local f_gce_operationType = ProtoField.uint8("gce.operationType", "operationType", base.HEX, genericOperationValues)
 
 p_nexxt_gce.fields =  {
 	f_gce_operationId,
@@ -307,8 +307,8 @@ local metricsOperationValues = {
 	[0x02] = "Update Status",
 }
 
-local f_gcm_operationId =  ProtoField.uint8("cgm.operationId", "operationId", base.HEX, metricsOperationValues)
-local f_gcm_operationType = ProtoField.uint8("cgm.operationType", "operationType", base.HEX, genericOperationValues)
+local f_gcm_operationId =  ProtoField.uint8("gcm.operationId", "operationId", base.HEX, metricsOperationValues)
+local f_gcm_operationType = ProtoField.uint8("gcm.operationType", "operationType", base.HEX, genericOperationValues)
 
 p_nexxt_gcm.fields =  {
 	f_gcm_operationId,
@@ -338,8 +338,8 @@ local badgeOperationValues = {
 	[0x06] = "List Next",
 }
 
-local f_gcb_operationId =  ProtoField.uint8("cgb.operationId", "operationId", base.HEX, badgeOperationValues)
-local f_gcb_operationType = ProtoField.uint8("cgb.operationType", "operationType", base.HEX, genericOperationValues)
+local f_gcb_operationId =  ProtoField.uint8("gcb.operationId", "operationId", base.HEX, badgeOperationValues)
+local f_gcb_operationType = ProtoField.uint8("gcb.operationType", "operationType", base.HEX, genericOperationValues)
 
 p_nexxt_gcb.fields =  {
 	f_gcb_operationId,
@@ -367,8 +367,8 @@ local timeOperationValues = {
 }
 
 
-local f_gct_operationId =  ProtoField.uint8("cgt.operationId", "operationId", base.HEX, timeOperationValues)
-local f_gct_operationType = ProtoField.uint8("cgt.operationType", "operationType", base.HEX, genericOperationValues)
+local f_gct_operationId =  ProtoField.uint8("gct.operationId", "operationId", base.HEX, timeOperationValues)
+local f_gct_operationType = ProtoField.uint8("gct.operationType", "operationType", base.HEX, genericOperationValues)
 
 p_nexxt_gct.fields =  {
 	f_gct_operationId,
@@ -397,8 +397,8 @@ local configOperationValues = {
 	[0x04] = "CBOR Get",
 }
 
-local f_gcc_operationId =  ProtoField.uint8("cgc.operationId", "operationId", base.HEX, configOperationValues)
-local f_gcc_operationType = ProtoField.uint8("cgc.operationType", "operationType", base.HEX, genericOperationValues)
+local f_gcc_operationId =  ProtoField.uint8("gcc.operationId", "operationId", base.HEX, configOperationValues)
+local f_gcc_operationType = ProtoField.uint8("gcc.operationType", "operationType", base.HEX, genericOperationValues)
 
 p_nexxt_gcc.fields =  {
 	f_gcc_operationId,
@@ -444,6 +444,205 @@ function p_nexxt_gc.dissector(buf, pinfo, tree)
 	end
 end
 
+-------------------------------------------------------------------------------
+-- Generic/CDR Generic STATUS Characteristic - loader
+-------------------------------------------------------------------------------
+local p_nexxt_gsl = Proto("nexxt_gsl", "Nexxtender Generic/CDR Status: Loader")
+
+local loaderStatusValues = {
+	[0x01] = "Unlocked",
+	[0x02] = "Unlocked Force MAX",
+	[0x03] = "Unlocked Force ECO",
+}
+
+local f_gsl_operationStatus =  ProtoField.uint8("gsl.operationStatus", "operationStatus", base.HEX, loaderStatusValues)
+local f_gsl_operationType = ProtoField.uint8("gsl.operationType", "operationType", base.HEX, genericOperationValues)
+
+p_nexxt_gsl.fields =  {
+	f_gsl_operationStatus,
+	f_gsl_operationType
+}
+
+function p_nexxt_gsl.dissector(buf, pinfo, tree)
+	print("p_nexxt_gsl.dissector: ", buf:bytes():tohex())
+	length = buf:len()
+	if length ~= 2 then return end
+	pinfo.cols.protocol = p_nexxt_gsl.name
+	local subtree = tree:add(p_nexxt_gsl, buf())
+	subtree:add_le(f_gsl_operationStatus, buf(0,1))
+	subtree:add_le(f_gsl_operationType, buf(1,1))
+end
+
+-------------------------------------------------------------------------------
+-- Generic/CDR Generic STATUS Characteristic - event
+-------------------------------------------------------------------------------
+local p_nexxt_gse = Proto("nexxt_gse", "Nexxtender Generic/CDR Status: Event")
+
+
+local f_gse_remainingEvents =  ProtoField.uint8("gse.remainingEvents", "remainingEvents", base.HEX)
+local f_gse_operationType = ProtoField.uint8("gse.operationType", "operationType", base.HEX, genericOperationValues)
+
+p_nexxt_gse.fields =  {
+	f_gse_remainingEvents,
+	f_gse_operationType
+}
+
+function p_nexxt_gse.dissector(buf, pinfo, tree)
+	print("p_nexxt_gse.dissector: ", buf:bytes():tohex())
+	length = buf:len()
+	if length ~= 2 then return end
+	pinfo.cols.protocol = p_nexxt_gse.name
+	local subtree = tree:add(p_nexxt_gse, buf())
+	subtree:add_le(f_gse_remainingEvents, buf(0,1))
+	subtree:add_le(f_gse_operationType, buf(1,1))
+end
+
+-------------------------------------------------------------------------------
+-- Generic/CDR Generic STATUS Characteristic - metric
+-------------------------------------------------------------------------------
+local p_nexxt_gsm = Proto("nexxt_gsm", "Nexxtender Generic/CDR Status: Metric")
+
+
+local f_gsm_remainingEvents =  ProtoField.uint8("gsm.remainingEvents", "remainingEvents", base.HEX)
+local f_gsm_operationType = ProtoField.uint8("gsm.operationType", "operationType", base.HEX, genericOperationValues)
+
+p_nexxt_gsm.fields =  {
+	f_gsm_remainingEvents,
+	f_gsm_operationType
+}
+
+function p_nexxt_gsm.dissector(buf, pinfo, tree)
+	print("p_nexxt_gsm.dissector: ", buf:bytes():tohex())
+	length = buf:len()
+	if length ~= 2 then return end
+	pinfo.cols.protocol = p_nexxt_gsm.name
+	local subtree = tree:add(p_nexxt_gsm, buf())
+	subtree:add_le(f_gsm_remainingEvents, buf(0,1))
+	subtree:add_le(f_gsm_operationType, buf(1,1))
+end
+
+-------------------------------------------------------------------------------
+-- Generic/CDR Generic STATUS Characteristic - badge
+-------------------------------------------------------------------------------
+local p_nexxt_gsb = Proto("nexxt_gsb", "Nexxtender Generic/CDR Status: Badge")
+
+local badgeStatusValues = {
+	[0x01] = "Wait Add",
+	[0x02] = "Wait Add",
+	[0x04] = "Wait Delete",
+	[0x05] = "Next",
+	[0x07] = "Finish",
+	[0x08] = "Added",
+	[0x09] = "Exists",
+}
+
+local f_gsb_operationStatus =  ProtoField.uint8("gsb.operationStatus", "operationStatus", base.HEX, badgeStatusValues)
+local f_gsb_operationType = ProtoField.uint8("gsb.operationType", "operationType", base.HEX, genericOperationValues)
+
+p_nexxt_gsb.fields =  {
+	f_gsb_operationStatus,
+	f_gsb_operationType
+}
+
+function p_nexxt_gsb.dissector(buf, pinfo, tree)
+	print("p_nexxt_gsb.dissector: ", buf:bytes():tohex())
+	length = buf:len()
+	if length ~= 2 then return end
+	pinfo.cols.protocol = p_nexxt_gsb.name
+	local subtree = tree:add(p_nexxt_gsb, buf())
+	subtree:add_le(f_gsb_operationStatus, buf(0,1))
+	subtree:add_le(f_gsb_operationType, buf(1,1))
+end
+
+-------------------------------------------------------------------------------
+-- Generic/CDR Generic STATUS Characteristic - time
+-------------------------------------------------------------------------------
+local p_nexxt_gst = Proto("nexxt_gst", "Nexxtender Generic/CDR Status: Time")
+
+local timeStatusValues = {
+	[0x01] = "Ready",
+	[0x02] = "Success",
+	[0x03] = "Popped",
+}
+
+local f_gst_operationStatus =  ProtoField.uint8("gst.operationStatus", "operationStatus", base.HEX, timeStatusValues)
+local f_gst_operationType = ProtoField.uint8("gst.operationType", "operationType", base.HEX, genericOperationValues)
+
+p_nexxt_gst.fields =  {
+	f_gst_operationStatus,
+	f_gst_operationType
+}
+
+function p_nexxt_gst.dissector(buf, pinfo, tree)
+	print("p_nexxt_gst.dissector: ", buf:bytes():tohex())
+	length = buf:len()
+	if length ~= 2 then return end
+	pinfo.cols.protocol = p_nexxt_gst.name
+	local subtree = tree:add(p_nexxt_gst, buf())
+	subtree:add_le(f_gst_operationStatus, buf(0,1))
+	subtree:add_le(f_gst_operationType, buf(1,1))
+end
+
+-------------------------------------------------------------------------------
+-- Generic/CDR Generic STATUS Characteristic - config
+-------------------------------------------------------------------------------
+local p_nexxt_gsc = Proto("nexxt_gsc", "Nexxtender Generic/CDR Status: Config")
+
+local configStatusValues = {
+	[0x01] = "Ready (After a Config Set)",
+	[0x02] = "Success (After a Config Set)",
+	[0x03] = "Popped (After a Config Get)",
+	[0x04] = "Ready (After a Config CBOR Set)",
+	[0x05] = "Success (After a Config CBOR Set)",
+	[0x06] = "Popped (After a Config CBOR Get)",
+}
+
+local f_gsc_operationStatus =  ProtoField.uint8("gsc.operationStatus", "operationStatus", base.HEX, configStatusValues)
+local f_gsc_operationType = ProtoField.uint8("gsc.operationType", "operationType", base.HEX, genericOperationValues)
+
+p_nexxt_gsc.fields =  {
+	f_gsc_operationStatus,
+	f_gsc_operationType
+}
+
+function p_nexxt_gsc.dissector(buf, pinfo, tree)
+	print("p_nexxt_gsc.dissector: ", buf:bytes():tohex())
+	length = buf:len()
+	if length ~= 2 then return end
+	pinfo.cols.protocol = p_nexxt_gsc.name
+	local subtree = tree:add(p_nexxt_gsc, buf())
+	subtree:add_le(f_gsc_operationStatus, buf(0,1))
+	subtree:add_le(f_gsc_operationType, buf(1,1))
+end
+
+-------------------------------------------------------------------------------
+-- Generic/CDR Generic STATUS Characteristic
+-------------------------------------------------------------------------------
+local p_nexxt_gs = Proto("nexxt_gs", "Nexxtender Generic/CDR Status")
+
+local gsDissectors = {
+	[0x00] = p_nexxt_gsl.dissector,
+	[0x10] = p_nexxt_gse.dissector,
+	[0x20] = p_nexxt_gsm.dissector,
+	[0x30] = p_nexxt_gsb.dissector,
+	[0x40] = p_nexxt_gst.dissector,
+	[0x50] = p_nexxt_gsc.dissector,
+}
+
+print("fuut.lua defining Generic/CDR Generic Status")
+
+function p_nexxt_gs.dissector(buf, pinfo, tree)
+	print("p_nexxt_gs.dissector: ", buf:bytes():tohex())
+	length = buf:len()
+	if length ~= 2 then return end
+	pinfo.cols.protocol = p_nexxt_gs.name
+	local operationType=buf(1,1):uint()
+	local dissector = gsDissectors[operationType]
+	
+	if dissector ~= nil then
+		dissector:call(buf, pinfo, tree)
+	end
+end
 
 
 print("fuut.lua defined Generic/CDR Generic Command")
@@ -461,6 +660,7 @@ local UUID_NEXXTENDER_CHARGING_GRID_DATA_CHARACTERISTIC = UUID_NEXXTENDER_BASE..
 local UUID_NEXXTENDER_CHARGING_CAR_DATA_CHARACTERISTIC = UUID_NEXXTENDER_BASE.."da"
 local UUID_NEXXTENDER_CHARGING_ADVANCED_DATA_CHARACTERISTIC = UUID_NEXXTENDER_BASE.."db"
 local UUID_NEXXTENDER_GENERIC_COMMAND_CHARACTERISTIC = UUID_NEXXTENDER_BASE.."dd"
+local UUID_NEXXTENDER_GENERIC_STATUS_CHARACTERISTIC = UUID_NEXXTENDER_BASE.."de"
 
 local p_nexxt = Proto("nexxt", "Nexxtender BLE GATT")
 
@@ -479,6 +679,8 @@ print("fuut.lua registering dissector p_nexxt_cad ")
 bt_dissector:add(UUID_NEXXTENDER_CHARGING_ADVANCED_DATA_CHARACTERISTIC, p_nexxt_cad)
 print("fuut.lua registering dissector p_nexxt_gc ")
 bt_dissector:add(UUID_NEXXTENDER_GENERIC_COMMAND_CHARACTERISTIC, p_nexxt_gc)
+print("fuut.lua registering dissector p_nexxt_gs ")
+bt_dissector:add(UUID_NEXXTENDER_GENERIC_STATUS_CHARACTERISTIC, p_nexxt_gs)
 
 
 print("fuut.lua end")
