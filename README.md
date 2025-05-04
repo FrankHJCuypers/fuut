@@ -52,48 +52,49 @@ and adds the parsed result to the Wireshark Packet Details view.
 
 The following messages are already parsed by `fuut.lua`:
 
-| Protocol  | Service  | Characteristic         | Type   |
-| --------- | -------- | ---------------------- | ------ |
-| NEXXT_CBD | CHARGING | CHARGING_BASIC_DATA    | NA     |
-| NEXXT_CGD | CHARGING | CHARGING_GRID_DATA     | NA     |
-| NEXXT_CCD | CHARGING | CHARGING_CAR_DATA      | NA     |
-| NEXXT_CAD | CHARGING | CHARGING_ADVANCED_DATA | NA     |
-| NEXXT_GC  | GENERIC  | COMMAND                |        |
-| NEXXT_GCL | GENERIC  | COMMAND                | Loader |
-| NEXXT_GCE | GENERIC  | COMMAND                | Event  |
-| NEXXT_GCM | GENERIC  | COMMAND                | Metric |
-| NEXXT_GCB | GENERIC  | COMMAND                | Badge  |
-| NEXXT_GCT | GENERIC  | COMMAND                | Time   |
-| NEXXT_GCC | GENERIC  | COMMAND                | Config |
-| NEXXT_GS  | GENERIC  | STATUS                 |        |
-| NEXXT_GSL | GENERIC  | STATUS                 | Loader |
-| NEXXT_GSE | GENERIC  | STATUS                 | Event  |
-| NEXXT_GSM | GENERIC  | STATUS                 | Metric |
-| NEXXT_GSB | GENERIC  | STATUS                 | Badge  |
-| NEXXT_GST | GENERIC  | STATUS                 | Time   |
-| NEXXT_GSC | GENERIC  | STATUS                 | Config |
+| Protocol  | Service  | Characteristic         | Type               |
+| --------- | -------- | ---------------------- | ------------------ |
+| NEXXT_CBD | CHARGING | CHARGING_BASIC_DATA    | NA                 |
+| NEXXT_CGD | CHARGING | CHARGING_GRID_DATA     | NA                 |
+| NEXXT_CCD | CHARGING | CHARGING_CAR_DATA      | NA                 |
+| NEXXT_CAD | CHARGING | CHARGING_ADVANCED_DATA | NA                 |
+| NEXXT_GC  | GENERIC  | COMMAND                |                    |
+| NEXXT_GCL | GENERIC  | COMMAND                | Loader             |
+| NEXXT_GCE | GENERIC  | COMMAND                | Event              |
+| NEXXT_GCM | GENERIC  | COMMAND                | Metric             |
+| NEXXT_GCB | GENERIC  | COMMAND                | Badge              |
+| NEXXT_GCT | GENERIC  | COMMAND                | Time               |
+| NEXXT_GCC | GENERIC  | COMMAND                | Config             |
+| NEXXT_GS  | GENERIC  | STATUS                 |                    |
+| NEXXT_GSL | GENERIC  | STATUS                 | Loader             |
+| NEXXT_GSE | GENERIC  | STATUS                 | Event              |
+| NEXXT_GSM | GENERIC  | STATUS                 | Metric             |
+| NEXXT_GSB | GENERIC  | STATUS                 | Badge              |
+| NEXXT_GST | GENERIC  | STATUS                 | Time               |
+| NEXXT_GSC | GENERIC  | STATUS                 | Config             |
+| NEXXT_GD  | GENERIC  | DATA                   |                    |
+| NEXXT_GDL | GENERIC  | DATA                   | Loader             |
+| NEXXT_GDE | GENERIC  | DATA                   | Event              |
+| NEXXT_GDM | GENERIC  | DATA                   | Metric             |
+| NEXXT_GDB | GENERIC  | DATA                   | Badge              |
+| NEXXT_GDT | GENERIC  | DATA                   | Time               |
+| NEXXT_GDC | GENERIC  | DATA                   | Config 1.0 and 1.1 |
 
 The following messages are not yet parsed by `fuut.lua`:
 
-| Protocol  | Service  | Characteristic         | Type   |
-| --------- | ---------| ---------------------- | ------ |
-| NEXXT_GD  | GENERIC  | DATA                   |        |
-| NEXXT_GDL | GENERIC  | DATA                   | Loader |
-| NEXXT_GDE | GENERIC  | DATA                   | Event  |
-| NEXXT_GDM | GENERIC  | DATA                   | Metric |
-| NEXXT_GDB | GENERIC  | DATA                   | Badge  |
-| NEXXT_GDT | GENERIC  | DATA                   | Time   |
-| NEXXT_GDC | GENERIC  | DATA                   | Config |
-| NEXXT_CC  | CDR      | COMMAND                | NA     |
-| NEXXT_CS  | CDR      | STATUS                 | NA     |
-| NEXXT_CR  | CDR      | RECORD                 | NA     |
-| NEXXT_DC  | CCDT     | COMMAND                | NA     |
-| NEXXT_DS  | CCDT     | STATUS                 | NA     |
-| NEXXT_DR  | CCDT     | RECORD                 | NA     |
-| NEXXT_FC  | FIRMWARE | COMMAND                | NA     |
-| NEXXT_FS  | FIRMWARE | STATUS                 | NA     |
-| NEXXT_FW  | FIRMWARE | WANTED_CHUNK           | NA     |
-| NEXXT_FD  | FIRMWARE | DATA_CHUNK             | NA     |
+| Protocol  | Service  | Characteristic         | Type        |
+| --------- | ---------| ---------------------- | ----------- |
+| NEXXT_GDC | GENERIC  | DATA                   | Config CBOR |
+| NEXXT_CC  | CDR      | COMMAND                | NA          |
+| NEXXT_CS  | CDR      | STATUS                 | NA          |
+| NEXXT_CR  | CDR      | RECORD                 | NA          |
+| NEXXT_DC  | CCDT     | COMMAND                | NA          |
+| NEXXT_DS  | CCDT     | STATUS                 | NA          |
+| NEXXT_DR  | CCDT     | RECORD                 | NA          |
+| NEXXT_FC  | FIRMWARE | COMMAND                | NA          |
+| NEXXT_FS  | FIRMWARE | STATUS                 | NA          |
+| NEXXT_FW  | FIRMWARE | WANTED_CHUNK           | NA          |
+| NEXXT_FD  | FIRMWARE | DATA_CHUNK             | NA          |
 
 The type of message is shown in the *Protocol* column of the Wireshark Packet List view.
 
