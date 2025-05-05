@@ -24,8 +24,50 @@ print("fuut.lua start")
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
+-- CRC-16-MODBUS
+-- Also known as CRC-16-IBM, Bisync, USB, ANSI X3.28, SIA DC-07,...
+-- Not the fastest implementation, but simple
+-------------------------------------------------------------------------------
+local polynomial = 0x8005
+local initial_value = 0xFFFF
+
+local function crc16_modbus(data, start, len)
+    local crc = 0xFFFF
+    for i = start, start + len - 1 do
+        local b = data:get_index(i)
+        crc = crc ~ b
+        for j = 1, 8 do
+            if (crc & 0x0001) == 1 then
+                crc = (crc >> 1) ~ 0xA001
+            else
+                crc = crc >> 1
+            end
+        end
+    end
+    return crc
+end
+
+local function crc16_modbus_alternative(data, start, len)
+    local crc = 0xFFFF
+    for i = start, start + len - 1 do
+        local b = data:get_index(i)
+        for j = 0, 7 do
+            local bit = (b >> j) & 0x0001
+            local c15 = (crc >> 15) & 0x0001
+            crc = (crc << 1) & 0xFFFF
+            if ((c15 ~ bit) & 0x0001) == 1 then
+                crc = crc ~ 0x8005
+            end
+        end
+    end
+
+    return ((crc << 8) & 0xFFFF) | (crc >> 8)
+end
+
+-------------------------------------------------------------------------------
 -- Charging Service
 -------------------------------------------------------------------------------
+
 local p_nexxt_charging = Proto("nexxt_charge_s", "Nexxtender Charging Service")
 
 function p_nexxt_charging.dissector(buf, pinfo, tree)
@@ -102,7 +144,8 @@ local f_cgd_l3 = ProtoField.int16("cgd.l3", "L3", base.DEC)
 local f_cgd_consumed = ProtoField.int16("cgd.consumed", "Consumed", base.DEC)
 local f_cgd_interval = ProtoField.uint16("cgd.interval", "Interval", base.DEC)
 local f_cgd_crc16 = ProtoField.uint16("cgd.crc16", "crc16", base.HEX)
-
+local f_cgd_crcIncorrect =
+    ProtoExpert.new("cgd.crc16.wrong", "CRC incorrect", expert.group.CHECKSUM, expert.severity.ERROR)
 p_nexxt_cgd.fields = {
     f_cgd_timestamp,
     f_cgd_l1,
@@ -113,6 +156,10 @@ p_nexxt_cgd.fields = {
     f_cgd_crc16
 }
 
+p_nexxt_cgd.experts = {
+    f_cgd_crcIncorrect
+}
+
 function p_nexxt_cgd.dissector(buf, pinfo, tree)
     print("p_nexxt_cgd.dissector: ", buf:bytes():tohex())
     length = buf:len()
@@ -121,13 +168,21 @@ function p_nexxt_cgd.dissector(buf, pinfo, tree)
     end
     pinfo.cols.protocol = p_nexxt_cgd.name
     local subtree = tree:add(p_nexxt_cgd, buf())
+
     subtree:add_le(f_cgd_timestamp, buf(0, 4))
     subtree:add_packet_field(f_cgd_l1, buf(4, 2), ENC_LITTLE_ENDIAN, "dA")
     subtree:add_packet_field(f_cgd_l2, buf(6, 2), ENC_LITTLE_ENDIAN, "dA")
     subtree:add_packet_field(f_cgd_l3, buf(8, 2), ENC_LITTLE_ENDIAN, "dA")
     subtree:add_packet_field(f_cgd_consumed, buf(10, 2), ENC_LITTLE_ENDIAN, "Wh")
     subtree:add_packet_field(f_cgd_interval, buf(12, 2), ENC_LITTLE_ENDIAN, "s")
-    subtree:add_le(f_cgd_crc16, buf(14, 2))
+    local treeitem = subtree:add_le(f_cgd_crc16, buf(14, 2))
+
+    local computedCrc = crc16_modbus(buf:bytes(), 0, 14)
+    local receivedCrc = buf:bytes(14, 2):le_uint()
+    print("Computed crc: " .. string.format("0x%04x", computedCrc))
+    if (receivedCrc ~= computedCrc) then
+        treeitem:add_proto_expert_info(f_cgd_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+    end
 end
 
 print("fuut.lua defined Charging Grid Data")
@@ -146,6 +201,8 @@ local f_ccd_p1 = ProtoField.int16("ccd.p1", "P1", base.DEC)
 local f_ccd_p2 = ProtoField.int16("ccd.p2", "P2", base.DEC)
 local f_ccd_p3 = ProtoField.int16("ccd.p3", "P3", base.DEC)
 local f_ccd_crc16 = ProtoField.uint16("ccd.crc16", "crc16", base.HEX)
+local f_ccd_crcIncorrect =
+    ProtoExpert.new("ccd.crc16.wrong", "CRC incorrect", expert.group.CHECKSUM, expert.severity.ERROR)
 
 p_nexxt_ccd.fields = {
     f_ccd_timestamp,
@@ -158,6 +215,9 @@ p_nexxt_ccd.fields = {
     f_ccd_crc16
 }
 
+p_nexxt_ccd.experts = {
+    f_ccd_crcIncorrect
+}
 function p_nexxt_ccd.dissector(buf, pinfo, tree)
     print("p_nexxt_ccd.dissector: ", buf:bytes():tohex())
     length = buf:len()
@@ -173,7 +233,14 @@ function p_nexxt_ccd.dissector(buf, pinfo, tree)
     subtree:add_packet_field(f_ccd_p1, buf(10, 2), ENC_LITTLE_ENDIAN, "W")
     subtree:add_packet_field(f_ccd_p2, buf(12, 2), ENC_LITTLE_ENDIAN, "W")
     subtree:add_packet_field(f_ccd_p3, buf(14, 2), ENC_LITTLE_ENDIAN, "W")
-    subtree:add_le(f_ccd_crc16, buf(16, 2))
+    local treeitem = subtree:add_le(f_ccd_crc16, buf(16, 2))
+
+    local computedCrc = crc16_modbus(buf:bytes(), 0, 16)
+    local receivedCrc = buf:bytes(16, 2):le_uint()
+    print("Computed crc: " .. string.format("0x%04x", computedCrc))
+    if (receivedCrc ~= computedCrc) then
+        treeitem:add_proto_expert_info(f_ccd_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+    end
 end
 
 print("fuut.lua defined Charging Grid Data")
@@ -198,6 +265,8 @@ local f_cad_authorizationStatus =
     ProtoField.uint8("cad.authorizationStatus", "AuthorizarionStatus", base.HEX, authorizationStatusValues)
 local f_cad_errorCode = ProtoField.uint8("cad.errorCode", "ErrorCode", base.HEX)
 local f_cad_crc16 = ProtoField.uint16("cad.crc16", "crc", base.HEX)
+local f_cad_crcIncorrect =
+    ProtoExpert.new("cad.crc16.wrong", "CRC incorrect", expert.group.CHECKSUM, expert.severity.ERROR)
 p_nexxt_cad.fields = {
     f_cad_timestamp,
     f_cad_iAvailable,
@@ -206,6 +275,10 @@ p_nexxt_cad.fields = {
     f_cad_authorizationStatus,
     f_cad_errorCode,
     f_cad_crc16
+}
+
+p_nexxt_cad.experts = {
+    f_cad_crcIncorrect
 }
 
 function p_nexxt_cad.dissector(buf, pinfo, tree)
@@ -222,7 +295,14 @@ function p_nexxt_cad.dissector(buf, pinfo, tree)
     subtree:add_packet_field(f_cad_carPower, buf(10, 4), ENC_LITTLE_ENDIAN, "W")
     subtree:add_le(f_cad_authorizationStatus, buf(14, 1))
     subtree:add_le(f_cad_errorCode, buf(15, 1))
-    subtree:add_le(f_ccd_crc16, buf(16, 2))
+    local treeitem = subtree:add_le(f_ccd_crc16, buf(16, 2))
+
+    local computedCrc = crc16_modbus(buf:bytes(), 0, 16)
+    local receivedCrc = buf:bytes(16, 2):le_uint()
+    print("Computed crc: " .. string.format("0x%04x", computedCrc))
+    if (receivedCrc ~= computedCrc) then
+        treeitem:add_proto_expert_info(f_cad_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+    end
 end
 
 print("fuut.lua defined Charging Advanced Data")
@@ -761,6 +841,9 @@ local f_gde_unknown3 = ProtoField.uint8("gsd.unknown3", "Unknown3", base.HEX)
 local f_gde_data = ProtoField.bytes("gsd.data", "Data")
 local f_gde_crc16 = ProtoField.uint16("gde.crc16", "crc16", base.HEX)
 
+local f_gde_crcIncorrect =
+    ProtoExpert.new("gde.crc16.wrong", "CRC incorrect", expert.group.CHECKSUM, expert.severity.ERROR)
+
 p_nexxt_gde.fields = {
     f_gde_eventTime,
     f_gde_unknown1,
@@ -768,6 +851,10 @@ p_nexxt_gde.fields = {
     f_gde_unknown3,
     f_gde_data,
     f_gde_crc16
+}
+
+p_nexxt_gde.experts = {
+    f_gde_crcIncorrect
 }
 
 function p_nexxt_gde.dissector(buf, pinfo, tree)
@@ -783,7 +870,13 @@ function p_nexxt_gde.dissector(buf, pinfo, tree)
     subtree:add_le(f_gde_unknown2, buf(5, 1))
     subtree:add_le(f_gde_unknown3, buf(6, 1))
     subtree:add_le(f_gde_data, buf(7, 11))
-    subtree:add_le(f_gde_crc16, buf(18, 2))
+    local treeitem = subtree:add_le(f_gde_crc16, buf(18, 2))
+    local computedCrc = crc16_modbus(buf:bytes(), 0, 18)
+    local receivedCrc = buf:bytes(18, 2):le_uint()
+    print("Computed crc: " .. string.format("0x%04x", computedCrc))
+    if (receivedCrc ~= computedCrc) then
+        treeitem:add_proto_expert_info(f_gde_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+    end
 end
 
 -------------------------------------------------------------------------------
@@ -874,6 +967,8 @@ local f_gdc1_0_touWeekEnd = ProtoField.uint16("gdc1_0.touWeekEnd", "TouWeekEnd",
 local f_gdc1_0_touWeekendStart = ProtoField.uint16("gdc1_0.touWeekendStart", "TouWeekendStart", base.DEC)
 local f_gdc1_0_touWeekendEnd = ProtoField.uint16("gdc1_0.touWeekendEnd", "TouWeekendEnd", base.DEC)
 local f_gdc1_0_crc16 = ProtoField.uint16("gdc1_0.crc16", "crc16", base.HEX)
+local f_gdc1_0_crcIncorrect =
+    ProtoExpert.new("cad.gdc1_0.wrong", "CRC incorrect", expert.group.CHECKSUM, expert.severity.ERROR)
 
 p_nexxt_gdc1_0.fields = {
     f_gdc1_0_maxGrid,
@@ -884,6 +979,10 @@ p_nexxt_gdc1_0.fields = {
     f_gdc1_0_touWeekendStart,
     f_gdc1_0_touWeekendEnd,
     f_gdc1_0_crc16
+}
+
+p_nexxt_gdc1_0.experts = {
+    f_gdc1_0_crcIncorrect
 }
 
 function p_nexxt_gdc1_0.dissector(buf, pinfo, tree)
@@ -901,7 +1000,13 @@ function p_nexxt_gdc1_0.dissector(buf, pinfo, tree)
     subtree:add_le(f_gdc1_0_touWeekEnd, buf(5, 2)):append_text(touString(buf(5, 2):le_uint()))
     subtree:add_le(f_gdc1_0_touWeekendStart, buf(7, 2)):append_text(touString(buf(7, 2):le_uint()))
     subtree:add_le(f_gdc1_0_touWeekendEnd, buf(9, 2)):append_text(touString(buf(9, 2):le_uint()))
-    subtree:add_le(f_gdc1_0_crc16, buf(11, 2))
+    local treeitem = subtree:add_le(f_gdc1_0_crc16, buf(11, 2))
+    local computedCrc = crc16_modbus(buf:bytes(), 0, 11)
+    local receivedCrc = buf:bytes(11, 2):le_uint()
+    print("Computed crc: " .. string.format("0x%04x", computedCrc))
+    if (receivedCrc ~= computedCrc) then
+        treeitem:add_proto_expert_info(f_gdc1_0_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+    end
 end
 
 -------------------------------------------------------------------------------
@@ -924,6 +1029,8 @@ local f_gdc1_1_touWeekEnd = ProtoField.uint16("gdc1_1.touWeekEnd", "TouWeekEnd",
 local f_gdc1_1_touWeekendStart = ProtoField.uint16("gdc1_1.touWeekendStart", "TouWeekendStart", base.DEC)
 local f_gdc1_1_touWeekendEnd = ProtoField.uint16("gdc1_1.touWeekendEnd", "TouWeekendEnd", base.DEC)
 local f_gdc1_1_crc16 = ProtoField.uint16("gdc1_1.crc16", "crc16", base.HEX)
+local f_gdc1_1_crcIncorrect =
+    ProtoExpert.new("cad.gdc1_1.wrong", "CRC incorrect", expert.group.CHECKSUM, expert.severity.ERROR)
 
 p_nexxt_gdc1_1.fields = {
     f_gdc1_1_maxGrid,
@@ -938,6 +1045,9 @@ p_nexxt_gdc1_1.fields = {
     f_gdc1_1_crc16
 }
 
+p_nexxt_gdc1_1.experts = {
+    f_gdc1_1_crcIncorrect
+}
 function touString(timeInMinutes)
     time = os.time({year = 1970, month = 1, day = 1, hour = 24, min = timeInMinutes})
     times = " (" .. os.date("%H:%M", time) .. ")"
@@ -961,19 +1071,45 @@ function p_nexxt_gdc1_1.dissector(buf, pinfo, tree)
     subtree:add_le(f_gdc1_1_touWeekEnd, buf(7, 2)):append_text(touString(buf(7, 2):le_uint()))
     subtree:add_le(f_gdc1_1_touWeekendStart, buf(9, 2)):append_text(touString(buf(9, 2):le_uint()))
     subtree:add_le(f_gdc1_1_touWeekendEnd, buf(11, 2)):append_text(touString(buf(11, 2):le_uint()))
-    subtree:add_le(f_gdc1_1_crc16, buf(13, 2))
+    local treeitem = subtree:add_le(f_gdc1_1_crc16, buf(13, 2))
+    local computedCrc = crc16_modbus(buf:bytes(), 0, 13)
+    local receivedCrc = buf:bytes(13, 2):le_uint()
+    print("Computed crc: " .. string.format("0x%04x", computedCrc))
+    if (receivedCrc ~= computedCrc) then
+        treeitem:add_proto_expert_info(f_gdc1_1_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+    end
 end
-
 -------------------------------------------------------------------------------
 -- Generic/CDR Generic Data Characteristic - config CBOR
 -------------------------------------------------------------------------------
 local p_nexxt_gdcCBOR = Proto("nexxt_gdcCBOR", "Nexxtender Generic/CDR Data: Config CBOR")
 
+local f_gdcCBOR_crc16 = ProtoField.uint16("gdcCBOR.crc16", "crc16", base.HEX)
+local f_gdcCBOR_crcIncorrect =
+    ProtoExpert.new("cad.gdcCBOR.wrong", "CRC incorrect", expert.group.CHECKSUM, expert.severity.ERROR)
+
+p_nexxt_gdcCBOR.fields = {
+    f_gdcCBOR_crc16
+}
+
+p_nexxt_gdcCBOR.experts = {
+    f_gdcCBOR_crcIncorrect
+}
 function p_nexxt_gdcCBOR.dissector(buf, pinfo, tree)
     print("p_nexxt_gdcCBOR.dissector: ", buf:bytes():tohex())
     pinfo.cols.protocol = p_nexxt_gdcCBOR.name
     local subtree = tree:add(p_nexxt_gdcCBOR, buf())
-    -- nothing yet: CBOR still to be parsed
+    cborDissector = Dissector.get("cbor")
+    -- TODO: complete and test. Requires a trace of the command.
+    cborDissector.dissector(buf, pinfo, tree)
+    local dataLength = buf:len() - 2
+    local treeitem = subtree:add_le(f_gdcCBOR_crc16, buf(dataLength, 2))
+    local computedCrc = crc16_modbus(buf:bytes(), 0, dataLength)
+    local receivedCrc = buf:bytes(dataLength, 2):le_uint()
+    print("Computed crc: " .. string.format("0x%04x", computedCrc))
+    if (receivedCrc ~= computedCrc) then
+        treeitem:add_proto_expert_info(f_gdcCBOR_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+    end
 end
 
 -------------------------------------------------------------------------------

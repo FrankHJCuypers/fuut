@@ -102,6 +102,10 @@ The values parsed by the `fuut.lua` dissector are shown in the Wireshark Packet 
 under the node *Bluetooth Attribute Protocol*, 
 under the subnode that starts with *Nexxtender*.
 
+For messages with a CRC, the CRC is verified and flagged as an error when wrong;
+the CRC line will show red and a message is attached stating that the CRC is wrong, 
+inlcuding the correct CRC.
+
 The NEXXT-\* protocol messages can be filtered out in Wireshark by the following view filter: `_ws.col.protocol contains "NEXXT_"`
 
 For more information on the Nexxtender BLE protocol, see 
