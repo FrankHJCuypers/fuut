@@ -18,9 +18,10 @@
 
 # Wireshark Dissector in Lua for Nexxtender charger BLE
 
-The goal of this dissector is to dissect the specific BLE GATT message that are excanged,
+The goal of this dissector is to dissect the specific BLE GATT messages that are exchanged,
 according to 
 [Nexxtender Charger Information](https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information).
+It was developed based on the [Gaai app project](https://frankhjcuypers.github.io/Gaai/)
 
 ## Fuut?
 
@@ -43,7 +44,7 @@ I use the *Personal Lua Plugins* directory thyat expands to
 `C:\Users\Frank\AppData\Roaming\Wireshark\plugins` on my PC.
 
 It also helps to configure The BLE names and characteristics as explained in 
-[Wireshark: add Nexxtender Home BLE UUIDs](https://github.com/FrankHJCuypers/Gaai/wiki/Analyzing-Bluetooth-Low-Energy-Traffic#wireshark-add-nexxtender-home-ble-uuids).
+[Wireshark: add Nexxtender Home BLE UUIDs](https://github.com/FrankHJCuypers/Gaai/wiki/Analyzing-Bluetooth-Low-Energy-Traffic#add-nexxtender-home-ble-uuids).
 
 # Usage
 
@@ -127,6 +128,8 @@ Useful information can be found at
 - [Nexxtender Charger Information, Frank HJ Cuypers](https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information)
 - [Wireshark](https://www.wireshark.org/)
 - [Creating a Wireshark dissector in Lua](https://mika-s.github.io/wireshark/lua/dissector/2017/11/04/creating-a-wireshark-dissector-in-lua-1.html)
+- [Gaai app project](https://frankhjcuypers.github.io/Gaai/)
+- [Gaai app github](https://github.com/FrankHJCuypers/Gaai)
 # License
 
 This project is licensed under the GNU AGPLv3 License. See the [LICENSE](LICENSE) file for details.
