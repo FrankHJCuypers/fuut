@@ -380,9 +380,9 @@ function Print_g_genericOperationTypeOnLine()
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Command Characteristic - loader
+-- Generic Command Characteristic - loader
 -------------------------------------------------------------------------------
-local p_nexxt_gcl = Proto("nexxt_gcl", "Nexxtender Generic/CDR Command: Loader")
+local p_nexxt_gcl = Proto("nexxt_gcl", "Nexxtender Generic Command: Loader")
 
 local loaderOperationValues = {
     [0x01] = "Start Charging Default",
@@ -413,9 +413,9 @@ function p_nexxt_gcl.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Command Characteristic - event
+-- Generic Command Characteristic - event
 -------------------------------------------------------------------------------
-local p_nexxt_gce = Proto("nexxt_gce", "Nexxtender Generic/CDR Command: Event")
+local p_nexxt_gce = Proto("nexxt_gce", "Nexxtender Generic Command: Event")
 
 local eventOperationValues = {
     [0x01] = "Next",
@@ -443,9 +443,9 @@ function p_nexxt_gce.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Command Characteristic - metrics
+-- Generic Command Characteristic - metrics
 -------------------------------------------------------------------------------
-local p_nexxt_gcm = Proto("nexxt_gcm", "Nexxtender Generic/CDR Command: Metrics")
+local p_nexxt_gcm = Proto("nexxt_gcm", "Nexxtender Generic Command: Metrics")
 
 local metricsOperationValues = {
     [0x01] = "Next",
@@ -473,9 +473,9 @@ function p_nexxt_gcm.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Command Characteristic - badge
+-- Generic Command Characteristic - badge
 -------------------------------------------------------------------------------
-local p_nexxt_gcb = Proto("nexxt_gcb", "Nexxtender Generic/CDR Command: Badge")
+local p_nexxt_gcb = Proto("nexxt_gcb", "Nexxtender Generic Command: Badge")
 
 local badgeOperationValues = {
     [0x01] = "Add Badge Default",
@@ -506,9 +506,9 @@ function p_nexxt_gcb.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Command Characteristic - time
+-- Generic Command Characteristic - time
 -------------------------------------------------------------------------------
-local p_nexxt_gct = Proto("nexxt_gct", "Nexxtender Generic/CDR Command: Time")
+local p_nexxt_gct = Proto("nexxt_gct", "Nexxtender Generic Command: Time")
 
 local timeOperationValues = {
     [0x01] = "Set",
@@ -536,9 +536,9 @@ function p_nexxt_gct.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Command Characteristic - config
+-- Generic Command Characteristic - config
 -------------------------------------------------------------------------------
-local p_nexxt_gcc = Proto("nexxt_gcc", "Nexxtender Generic/CDR Command: Configuration")
+local p_nexxt_gcc = Proto("nexxt_gcc", "Nexxtender Generic Command: Configuration")
 
 local configOperationValues = {
     [0x01] = "Set",
@@ -568,9 +568,9 @@ function p_nexxt_gcc.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Command Characteristic
+-- Generic Command Characteristic
 -------------------------------------------------------------------------------
-local p_nexxt_gc = Proto("nexxt_gc", "Nexxtender Generic/CDR Command")
+local p_nexxt_gc = Proto("nexxt_gc", "Nexxtender Generic Command")
 
 local gcDissectors = {
     [0x00] = p_nexxt_gcl.dissector,
@@ -581,7 +581,7 @@ local gcDissectors = {
     [0x50] = p_nexxt_gcc.dissector
 }
 
-print("fuut.lua defining Generic/CDR Generic Command")
+print("fuut.lua defining Generic Command")
 
 function p_nexxt_gc.dissector(buf, pinfo, tree)
     print("p_nexxt_gc.dissector: ", buf:bytes():tohex())
@@ -604,9 +604,9 @@ function p_nexxt_gc.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic STATUS Characteristic - loader
+-- Generic STATUS Characteristic - loader
 -------------------------------------------------------------------------------
-local p_nexxt_gsl = Proto("nexxt_gsl", "Nexxtender Generic/CDR Status: Loader")
+local p_nexxt_gsl = Proto("nexxt_gsl", "Nexxtender Generic Status: Loader")
 
 local loaderStatusValues = {
     [0x01] = "Unlocked",
@@ -635,9 +635,9 @@ function p_nexxt_gsl.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic STATUS Characteristic - event
+-- Generic STATUS Characteristic - event
 -------------------------------------------------------------------------------
-local p_nexxt_gse = Proto("nexxt_gse", "Nexxtender Generic/CDR Status: Event")
+local p_nexxt_gse = Proto("nexxt_gse", "Nexxtender Generic Status: Event")
 
 local f_gse_remainingEvents = ProtoField.uint8("gse.remainingEvents", "RemainingEvents", base.HEX)
 local f_gse_operationType = ProtoField.uint8("gse.operationType", "OperationType", base.HEX, genericOperationValues)
@@ -660,9 +660,9 @@ function p_nexxt_gse.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic STATUS Characteristic - metric
+-- Generic STATUS Characteristic - metric
 -------------------------------------------------------------------------------
-local p_nexxt_gsm = Proto("nexxt_gsm", "Nexxtender Generic/CDR Status: Metric")
+local p_nexxt_gsm = Proto("nexxt_gsm", "Nexxtender Generic Status: Metric")
 
 local f_gsm_remainingEvents = ProtoField.uint8("gsm.remainingEvents", "RemainingEvents", base.HEX)
 local f_gsm_operationType = ProtoField.uint8("gsm.operationType", "OperationType", base.HEX, genericOperationValues)
@@ -685,9 +685,9 @@ function p_nexxt_gsm.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic STATUS Characteristic - badge
+-- Generic STATUS Characteristic - badge
 -------------------------------------------------------------------------------
-local p_nexxt_gsb = Proto("nexxt_gsb", "Nexxtender Generic/CDR Status: Badge")
+local p_nexxt_gsb = Proto("nexxt_gsb", "Nexxtender Generic Status: Badge")
 
 local badgeStatusValues = {
     [0x01] = "Wait Add",
@@ -720,9 +720,9 @@ function p_nexxt_gsb.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic STATUS Characteristic - time
+-- Generic STATUS Characteristic - time
 -------------------------------------------------------------------------------
-local p_nexxt_gst = Proto("nexxt_gst", "Nexxtender Generic/CDR Status: Time")
+local p_nexxt_gst = Proto("nexxt_gst", "Nexxtender Generic Status: Time")
 
 local timeStatusValues = {
     [0x01] = "Ready",
@@ -751,9 +751,9 @@ function p_nexxt_gst.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic STATUS Characteristic - config
+-- Generic STATUS Characteristic - config
 -------------------------------------------------------------------------------
-local p_nexxt_gsc = Proto("nexxt_gsc", "Nexxtender Generic/CDR Status: Config")
+local p_nexxt_gsc = Proto("nexxt_gsc", "Nexxtender Generic Status: Config")
 
 local configStatusValues = {
     [0x01] = "Ready (After a Config Set)",
@@ -785,9 +785,9 @@ function p_nexxt_gsc.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic STATUS Characteristic
+-- Generic STATUS Characteristic
 -------------------------------------------------------------------------------
-local p_nexxt_gs = Proto("nexxt_gs", "Nexxtender Generic/CDR Status")
+local p_nexxt_gs = Proto("nexxt_gs", "Nexxtender Generic Status")
 
 local gsDissectors = {
     [0x00] = p_nexxt_gsl.dissector,
@@ -798,7 +798,7 @@ local gsDissectors = {
     [0x50] = p_nexxt_gsc.dissector
 }
 
-print("fuut.lua defining Generic/CDR Generic Status")
+print("fuut.lua defining Generic Generic Status")
 
 function p_nexxt_gs.dissector(buf, pinfo, tree)
     print("p_nexxt_gs.dissector: ", buf:bytes():tohex())
@@ -820,9 +820,9 @@ function p_nexxt_gs.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic DATA Characteristic - loader
+-- Generic DATA Characteristic - loader
 -------------------------------------------------------------------------------
-local p_nexxt_gdl = Proto("nexxt_gdl", "Nexxtender Generic/CDR Data: Loader")
+local p_nexxt_gdl = Proto("nexxt_gdl", "Nexxtender Generic Data: Loader")
 
 function p_nexxt_gdl.dissector(buf, pinfo, tree)
     print("p_nexxt_gdl.dissector: ", buf:bytes():tohex())
@@ -830,9 +830,9 @@ function p_nexxt_gdl.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Data Characteristic - event
+-- Generic Data Characteristic - event
 -------------------------------------------------------------------------------
-local p_nexxt_gde = Proto("nexxt_gde", "Nexxtender Generic/CDR Data: Event")
+local p_nexxt_gde = Proto("nexxt_gde", "Nexxtender Generic Data: Event")
 
 local f_gde_eventTime = ProtoField.absolute_time("gde.EventTime", "EventTime", base.LOCAL)
 local f_gde_unknown1 = ProtoField.uint8("gsd.unknown1", "Unknown1", base.HEX)
@@ -880,9 +880,9 @@ function p_nexxt_gde.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Data Characteristic - metrics
+-- Generic Data Characteristic - metrics
 -------------------------------------------------------------------------------
-local p_nexxt_gdm = Proto("nexxt_gdm", "Nexxtender Generic/CDR Data: Metrics")
+local p_nexxt_gdm = Proto("nexxt_gdm", "Nexxtender Generic Data: Metrics")
 
 local f_gdm_unknown = ProtoField.bytes("gdm.unknown", "Unknown")
 
@@ -902,9 +902,9 @@ function p_nexxt_gdm.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Data Characteristic - badge
+-- Generic Data Characteristic - badge
 -------------------------------------------------------------------------------
-local p_nexxt_gdb = Proto("nexxt_gdb", "Nexxtender Generic/CDR Data: Badge")
+local p_nexxt_gdb = Proto("nexxt_gdb", "Nexxtender Generic Data: Badge")
 
 local f_gdb_uidLength = ProtoField.uint8("gdb.UIDLength", "UIDLength", base.DEC)
 local f_gdb_uid = ProtoField.bytes("gsd.uid", "UUID")
@@ -927,9 +927,9 @@ function p_nexxt_gdb.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Data Characteristic - time
+-- Generic Data Characteristic - time
 -------------------------------------------------------------------------------
-local p_nexxt_gdt = Proto("nexxt_gdt", "Nexxtender Generic/CDR Data: Time")
+local p_nexxt_gdt = Proto("nexxt_gdt", "Nexxtender Generic Data: Time")
 
 local f_gdt_timeStamp = ProtoField.absolute_time("gdt.TimeStamp", "TimeStamp", base.LOCAL)
 
@@ -949,9 +949,9 @@ function p_nexxt_gdt.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Data Characteristic - config 1_0
+-- Generic Data Characteristic - config 1_0
 -------------------------------------------------------------------------------
-local p_nexxt_gdc1_0 = Proto("nexxt_gdc1_0", "Nexxtender Generic/CDR Data: Config 1.0")
+local p_nexxt_gdc1_0 = Proto("nexxt_gdc1_0", "Nexxtender Generic Data: Config 1.0")
 
 local f_gdc1_0_maxGrid = ProtoField.uint8("gdc1_0.maxGrid", "MaxGrid", base.DEC)
 local modeValues = {
@@ -1010,9 +1010,9 @@ function p_nexxt_gdc1_0.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Data Characteristic - config 1_1
+-- Generic Data Characteristic - config 1_1
 -------------------------------------------------------------------------------
-local p_nexxt_gdc1_1 = Proto("nexxt_gdc1_1", "Nexxtender Generic/CDR Data: Config 1.1")
+local p_nexxt_gdc1_1 = Proto("nexxt_gdc1_1", "Nexxtender Generic Data: Config 1.1")
 
 local f_gdc1_1_maxGrid = ProtoField.uint8("gdc1_1.maxGrid", "MaxGrid", base.DEC)
 local f_gdc1_1_maxDevice = ProtoField.uint8("gdc1_1.maxDevice", "MaxDevice", base.DEC)
@@ -1080,9 +1080,9 @@ function p_nexxt_gdc1_1.dissector(buf, pinfo, tree)
     end
 end
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Data Characteristic - config CBOR
+-- Generic Data Characteristic - config CBOR
 -------------------------------------------------------------------------------
-local p_nexxt_gdcCBOR = Proto("nexxt_gdcCBOR", "Nexxtender Generic/CDR Data: Config CBOR")
+local p_nexxt_gdcCBOR = Proto("nexxt_gdcCBOR", "Nexxtender Generic Data: Config CBOR")
 
 local f_gdcCBOR_crc16 = ProtoField.uint16("gdcCBOR.crc16", "crc16", base.HEX)
 local f_gdcCBOR_crcIncorrect =
@@ -1113,9 +1113,9 @@ function p_nexxt_gdcCBOR.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic Data Characteristic - config
+-- Generic Data Characteristic - config
 -------------------------------------------------------------------------------
-local p_nexxt_gdc = Proto("nexxt_gdc", "Nexxtender Generic/CDR Data: Config")
+local p_nexxt_gdc = Proto("nexxt_gdc", "Nexxtender Generic Data: Config")
 
 local f_gdt_timeStamp = ProtoField.absolute_time("gdt.TimeStamp", "TimeStamp", base.LOCAL)
 
@@ -1132,9 +1132,9 @@ function p_nexxt_gdc.dissector(buf, pinfo, tree)
 end
 
 -------------------------------------------------------------------------------
--- Generic/CDR Generic DATA Characteristic
+-- Generic DATA Characteristic
 -------------------------------------------------------------------------------
-local p_nexxt_gd = Proto("nexxt_gd", "Nexxtender Generic/CDR Data")
+local p_nexxt_gd = Proto("nexxt_gd", "Nexxtender Generic Data")
 
 local gdDissectors = {
     [0x00] = p_nexxt_gdl.dissector,
@@ -1163,6 +1163,114 @@ end
 print("fuut.lua defined Generic/CDR Generic Command")
 
 -------------------------------------------------------------------------------
+-- CDR Command Characteristic
+-------------------------------------------------------------------------------
+local p_nexxt_cdrc = Proto("nexxt_cdrc", "Nexxtender CDR Command")
+
+local cdrOperationValues = {
+    [0x01] = "Next?",
+}
+local f_cdrc_operationId = ProtoField.uint8("cdrc.operationId", "OperationId", base.HEX, cdrOperationValues)
+
+p_nexxt_cdrc.fields = {
+    f_cdrc_operationId,
+}
+
+
+function p_nexxt_cdrc.dissector(buf, pinfo, tree)
+    print("p_nexxt_cdrc.dissector: ", buf:bytes():tohex())
+    length = buf:len()
+    if length ~= 1 then
+        return
+    end
+    pinfo.cols.protocol = p_nexxt_cdrc.name
+    local subtree = tree:add(p_nexxt_cdrc, buf())
+    subtree:add_le(f_cdrc_operationId, buf(0, 1))
+end
+
+-------------------------------------------------------------------------------
+-- CDR STATUS Characteristic
+-------------------------------------------------------------------------------
+local p_nexxt_cdrs = Proto("nexxt_cdrs", "Nexxtender CDR Status")
+
+local f_cdrs_remainingRecords = ProtoField.uint8("cdrs.remainingRecords", "RemainingRecords", base.DEC)
+
+p_nexxt_cdrs.fields = {
+    f_cdrs_remainingRecords,
+}
+
+function p_nexxt_cdrs.dissector(buf, pinfo, tree)
+    print("p_nexxt_cdrs.dissector: ", buf:bytes():tohex())
+    length = buf:len()
+    if length ~= 4 then
+        return
+    end
+    pinfo.cols.protocol = p_nexxt_cdrs.name
+    local subtree = tree:add(p_nexxt_cdrs, buf())
+    subtree:add_le(f_cdrs_remainingRecords, buf(0, 4))
+end
+
+-------------------------------------------------------------------------------
+-- CDR Record Characteristic 
+-------------------------------------------------------------------------------
+local p_nexxt_cdrr = Proto("nexxt_cdrr", "Nexxtender CDR Record")
+
+local f_cdrr_unknown1 = ProtoField.uint32("cdrr.unknown1", "Unknown1", base.HEX)
+local f_cdrr_sessionStartTime = ProtoField.absolute_time("cdrr.sessionStartTime", "SessionStartTime", base.LOCAL)
+local f_cdrr_sessionStartEnergy = ProtoField.uint32("cdrr.sessionStartEnergy", "SessionStartEnergy", base.DEC)
+local f_cdrr_unknown2 = ProtoField.uint32("cdrr.unknown2", "Unknown2", base.HEX)
+local f_cdrr_unknown3 = ProtoField.uint32("cdrr.unknown3", "Unknown3", base.HEX)
+local f_cdrr_sessionStopTime = ProtoField.absolute_time("cdrr.sessionStopTime", "SessionStopTime", base.LOCAL)
+local f_cdrr_sessionStopEnergy = ProtoField.uint32("cdrr.sessionStopEnergy", "SessionStopEnergy", base.DEC)
+local f_cdrr_unknown4 = ProtoField.uint16("cdrr.unknown4", "Unknown4", base.HEX)
+local f_cdrr_crc16 = ProtoField.uint16("cdrr.crc16", "crc16", base.HEX)
+
+local f_cdrr_crcIncorrect =
+    ProtoExpert.new("cdrr.crc16.wrong", "CRC incorrect", expert.group.CHECKSUM, expert.severity.ERROR)
+
+p_nexxt_cdrr.fields = {
+    f_cdrr_unknown1,
+    f_cdrr_sessionStartTime,
+    f_cdrr_sessionStartEnergy,
+    f_cdrr_unknown2,
+    f_cdrr_unknown3,
+    f_cdrr_sessionStopTime,
+	f_cdrr_sessionStopEnergy,
+	f_cdrr_unknown4,
+	f_cdrr_crc16
+}
+
+p_nexxt_cdrr.experts = {
+    f_cdrr_crcIncorrect
+}
+
+function p_nexxt_cdrr.dissector(buf, pinfo, tree)
+    print("p_nexxt_gde.dissector: ", buf:bytes():tohex())
+    length = buf:len()
+    if length ~= 32 then
+        return
+    end
+    pinfo.cols.protocol = p_nexxt_cdrr.name
+    local subtree = tree:add(p_nexxt_cdrr, buf())
+    subtree:add_le(f_cdrr_unknown1, buf(0, 4))
+    subtree:add_le(f_cdrr_sessionStartTime, buf(4, 4))
+    subtree:add_packet_field(f_cdrr_sessionStartEnergy, buf(8, 4), ENC_LITTLE_ENDIAN, "Wh")
+    subtree:add_le(f_cdrr_unknown2, buf(12, 4))
+    subtree:add_le(f_cdrr_unknown3, buf(16, 4))
+    subtree:add_le(f_cdrr_sessionStopTime, buf(20, 4))
+    subtree:add_packet_field(f_cdrr_sessionStopEnergy, buf(24, 4), ENC_LITTLE_ENDIAN, "Wh")
+    subtree:add_le(f_cdrr_unknown4, buf(28, 2))
+    local treeitem = subtree:add_le(f_cdrr_crc16, buf(30, 2))
+    local computedCrc = crc16_modbus(buf:bytes(), 0, 30)
+    local receivedCrc = buf:bytes(30, 2):le_uint()
+    print("Computed crc: " .. string.format("0x%04x", computedCrc))
+    if (receivedCrc ~= computedCrc) then
+        treeitem:add_proto_expert_info(f_cdrr_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+    end
+end
+
+print("fuut.lua defined CDR Command")
+-------------------------------------------------------------------------------
 -- Registering all dissectors
 -------------------------------------------------------------------------------
 print("fuut.lua registering dissectors")
@@ -1176,6 +1284,9 @@ local UUID_NEXXTENDER_CHARGING_ADVANCED_DATA_CHARACTERISTIC = UUID_NEXXTENDER_BA
 local UUID_NEXXTENDER_GENERIC_COMMAND_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "dd"
 local UUID_NEXXTENDER_GENERIC_STATUS_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "de"
 local UUID_NEXXTENDER_GENERIC_DATA_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "df"
+local UUID_NEXXTENDER_CDR_COMMAND_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c2"
+local UUID_NEXXTENDER_CDR_STATUS_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c3"
+local UUID_NEXXTENDER_CDR_RECORD_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c4"
 
 local p_nexxt = Proto("nexxt", "Nexxtender BLE GATT")
 
@@ -1197,5 +1308,11 @@ print("fuut.lua registering dissector p_nexxt_gs ")
 bt_dissector:add(UUID_NEXXTENDER_GENERIC_STATUS_CHARACTERISTIC, p_nexxt_gs)
 print("fuut.lua registering dissector p_nexxt_gd ")
 bt_dissector:add(UUID_NEXXTENDER_GENERIC_DATA_CHARACTERISTIC, p_nexxt_gd)
+print("fuut.lua registering dissector p_nexxt_cdrc ")
+bt_dissector:add(UUID_NEXXTENDER_CDR_COMMAND_CHARACTERISTIC, p_nexxt_cdrc)
+print("fuut.lua registering dissector p_nexxt_cdrs ")
+bt_dissector:add(UUID_NEXXTENDER_CDR_STATUS_CHARACTERISTIC, p_nexxt_cdrs)
+print("fuut.lua registering dissector p_nexxt_cdrr ")
+bt_dissector:add(UUID_NEXXTENDER_CDR_RECORD_CHARACTERISTIC, p_nexxt_cdrr)
 
 print("fuut.lua end")
