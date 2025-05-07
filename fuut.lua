@@ -1245,7 +1245,7 @@ p_nexxt_cdrr.experts = {
 }
 
 function p_nexxt_cdrr.dissector(buf, pinfo, tree)
-    print("p_nexxt_gde.dissector: ", buf:bytes():tohex())
+    print("p_nexxt_cdrr.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 32 then
         return
@@ -1270,6 +1270,120 @@ function p_nexxt_cdrr.dissector(buf, pinfo, tree)
 end
 
 print("fuut.lua defined CDR Command")
+
+-------------------------------------------------------------------------------
+-- CCDT Command Characteristic
+-------------------------------------------------------------------------------
+local p_nexxt_ccdtc = Proto("nexxt_ccdtc", "Nexxtender CCDT Command")
+
+local ccdtOperationValues = {
+    [0x01] = "Next?",
+}
+local f_ccdtc_operationId = ProtoField.uint8("ccdtc.operationId", "OperationId", base.HEX, ccdtOperationValues)
+
+p_nexxt_ccdtc.fields = {
+    f_ccdtc_operationId,
+}
+
+
+function p_nexxt_ccdtc.dissector(buf, pinfo, tree)
+    print("p_nexxt_ccdtc.dissector: ", buf:bytes():tohex())
+    length = buf:len()
+    if length ~= 1 then
+        return
+    end
+    pinfo.cols.protocol = p_nexxt_ccdtc.name
+    local subtree = tree:add(p_nexxt_ccdtc, buf())
+    subtree:add_le(f_ccdtc_operationId, buf(0, 1))
+end
+
+-------------------------------------------------------------------------------
+-- CCDT STATUS Characteristic
+-------------------------------------------------------------------------------
+local p_nexxt_ccdts = Proto("nexxt_ccdts", "Nexxtender CCDT Status")
+
+local f_ccdts_remainingRecords = ProtoField.uint8("ccdts.remainingRecords", "RemainingRecords", base.DEC)
+
+p_nexxt_ccdts.fields = {
+    f_ccdts_remainingRecords,
+}
+
+function p_nexxt_ccdts.dissector(buf, pinfo, tree)
+    print("p_nexxt_ccdts.dissector: ", buf:bytes():tohex())
+    length = buf:len()
+    if length ~= 4 then
+        return
+    end
+    pinfo.cols.protocol = p_nexxt_ccdts.name
+    local subtree = tree:add(p_nexxt_ccdts, buf())
+    subtree:add_le(f_ccdts_remainingRecords, buf(0, 4))
+end
+
+-------------------------------------------------------------------------------
+-- CCDT Record Characteristic 
+-------------------------------------------------------------------------------
+local p_nexxt_ccdtr = Proto("nexxt_ccdtr", "Nexxtender CCDT Record")
+
+local f_ccdtr_timestamp = ProtoField.absolute_time("ccdtr.timestamp", "Timestamp", base.LOCAL)
+local f_ccdtr_eventEnergy = ProtoField.uint32("ccdtr.eventEnergy", "EventEnergy", base.DEC)
+local f_ccdtr_quarterEnergy = ProtoField.uint16("ccdtr.quarterEnergy", "QuarterEnergy", base.DEC)
+local ccdtTypeValues = {
+    [0x21] = "CDR started",
+    [0x41] = "Not charging",
+    [0x42] = "Charge started",
+    [0x49] = "Charge stopped",
+    [0x4A] = "Charging",
+	[0x60] = " CDR stopped"
+}
+local f_ccdtr_ccdtType = ProtoField.uint8("ccdtr.ccdtType", "CCDT type", base.HEX, ccdtTypeValues)
+local f_ccdtr_l1 = ProtoField.uint32("ccdtr.l1", "L1", base.dec)
+local f_ccdtr_l2 = ProtoField.uint32("ccdtr.l2", "L2", base.dec)
+local f_ccdtr_l3 = ProtoField.uint32("ccdtr.l3", "L3", base.dec)
+local f_ccdtr_crc16 = ProtoField.uint16("ccdtr.crc16", "crc16", base.HEX)
+
+local f_ccdtr_crcIncorrect =
+    ProtoExpert.new("ccdtr.crc16.wrong", "CRC incorrect", expert.group.CHECKSUM, expert.severity.ERROR)
+
+p_nexxt_ccdtr.fields = {
+    f_ccdtr_timestamp,
+    f_ccdtr_eventEnergy,
+    f_ccdtr_quarterEnergy,
+    f_ccdtr_ccdtType,
+    f_ccdtr_l1,
+    f_ccdtr_l2,
+	f_ccdtr_l3,
+	f_ccdtr_crc16
+}
+
+p_nexxt_ccdtr.experts = {
+    f_ccdtr_crcIncorrect
+}
+
+function p_nexxt_ccdtr.dissector(buf, pinfo, tree)
+    print("p_nexxt_ccdtr.dissector: ", buf:bytes():tohex())
+    length = buf:len()
+    if length ~= 16 then
+        return
+    end
+    pinfo.cols.protocol = p_nexxt_ccdtr.name
+    local subtree = tree:add(p_nexxt_ccdtr, buf())
+    subtree:add_le(f_ccdtr_timestamp, buf(0, 4))
+    subtree:add_packet_field(f_ccdtr_eventEnergy, buf(4, 4), ENC_LITTLE_ENDIAN, "Wh")
+    subtree:add_packet_field(f_ccdtr_quarterEnergy, buf(8, 2), ENC_LITTLE_ENDIAN, "Wh")
+    subtree:add_le(f_ccdtr_ccdtType, buf(10, 1))
+    subtree:add_packet_field(f_ccdtr_l1, buf(11, 1), ENC_LITTLE_ENDIAN, "A")
+    subtree:add_packet_field(f_ccdtr_l2, buf(12, 1), ENC_LITTLE_ENDIAN, "A")
+    subtree:add_packet_field(f_ccdtr_l3, buf(13, 1), ENC_LITTLE_ENDIAN, "A")
+	local treeitem = subtree:add_le(f_ccdtr_crc16, buf(14, 2))
+    local computedCrc = crc16_modbus(buf:bytes(), 0, 14)
+    local receivedCrc = buf:bytes(14, 2):le_uint()
+    print("Computed crc: " .. string.format("0x%04x", computedCrc))
+    if (receivedCrc ~= computedCrc) then
+        treeitem:add_proto_expert_info(f_ccdtr_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+    end
+end
+
+print("fuut.lua defined CDR Command")
 -------------------------------------------------------------------------------
 -- Registering all dissectors
 -------------------------------------------------------------------------------
@@ -1287,6 +1401,9 @@ local UUID_NEXXTENDER_GENERIC_DATA_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "df"
 local UUID_NEXXTENDER_CDR_COMMAND_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c2"
 local UUID_NEXXTENDER_CDR_STATUS_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c3"
 local UUID_NEXXTENDER_CDR_RECORD_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c4"
+local UUID_NEXXTENDER_CCDT_COMMAND_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c6"
+local UUID_NEXXTENDER_CCDT_STATUS_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c7"
+local UUID_NEXXTENDER_CCDT_RECORD_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c8"
 
 local p_nexxt = Proto("nexxt", "Nexxtender BLE GATT")
 
@@ -1314,5 +1431,11 @@ print("fuut.lua registering dissector p_nexxt_cdrs ")
 bt_dissector:add(UUID_NEXXTENDER_CDR_STATUS_CHARACTERISTIC, p_nexxt_cdrs)
 print("fuut.lua registering dissector p_nexxt_cdrr ")
 bt_dissector:add(UUID_NEXXTENDER_CDR_RECORD_CHARACTERISTIC, p_nexxt_cdrr)
+print("fuut.lua registering dissector p_nexxt_cdrc ")
+bt_dissector:add(UUID_NEXXTENDER_CCDT_COMMAND_CHARACTERISTIC, p_nexxt_ccdtc)
+print("fuut.lua registering dissector p_nexxt_cdrs ")
+bt_dissector:add(UUID_NEXXTENDER_CCDT_STATUS_CHARACTERISTIC, p_nexxt_ccdts)
+print("fuut.lua registering dissector p_nexxt_cdrr ")
+bt_dissector:add(UUID_NEXXTENDER_CCDT_RECORD_CHARACTERISTIC, p_nexxt_ccdtr)
 
 print("fuut.lua end")
