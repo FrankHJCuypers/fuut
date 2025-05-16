@@ -1,0 +1,293 @@
+@startuml
+' An effort to show all the dissectors and dissector tables involved in Wireshark Bluetooth dissection.
+' Very incomplete and yet to complex.
+' Simplified in DissectorTablesShort.puml
+
+
+ left to right direction
+ 
+  rectangle "packet_bluetooth" {
+ 
+  Class bluetooth
+  bluetooth : register()
+  bluetooth : handoff()
+  
+  Class btad_apple_ibeacon
+  btad_apple_ibeacon : register()
+  btad_apple_ibeacon : handoff()
+  
+  Class btad_alt_beacon
+  btad_alt_beacon : register()
+  btad_alt_beacon : handoff()
+  
+  Class btad_gaen
+  btad_gaen : register()
+  btad_gaen : handoff()
+  
+  Class btad_matter
+  btad_matter : register()
+  btad_matter : handoff()
+  
+  bluetooth --[hidden]> btad_apple_ibeacon
+  btad_apple_ibeacon --[hidden]> btad_alt_beacon
+  btad_alt_beacon --[hidden]> btad_gaen
+  btad_gaen --[hidden]> btad_matter
+
+}
+
+
+
+map "bluetooth.uuid" as bluetooth_uuid {
+ UUID => Handle
+ 110a => bta2dp_handle
+ 1120 => obex_handle
+ "6e400002-b5a3-f393-e0a9-e50e24dcca9e" => dissect_btgatt_nordic_uart_tx
+ ... => ...
+}
+
+map "bluetooth.encap" as encap {
+ uint32 => Handle
+ ... => ...
+}
+
+map "bluetooth.vendor" as vendor {
+ uint16 => Handle
+ ... => ...
+}
+
+map "wtap_encap" as wtap_encap {
+ uint => Handle
+ ... => ...
+}
+
+map "usb.product" as usb_product {
+ uint => Handle
+ ... => ...
+}
+
+map "usb.protocol" as usb_protocol {
+ uint => Handle
+ ... => ...
+}
+
+map "llc.bluetooth_pid" as llc_bluetooth_pid {
+ uint => Handle
+ ... => ...
+}
+
+
+map "btcommon.eir_ad.entry.uuid" as btcommon_eir_ad_entry_uuid {
+ UUID => Handle
+ fd6f => btad_gaen
+ fff6 => btad_matter
+ ... => ...
+}
+
+
+
+bluetooth::register --> bluetooth_uuid : register
+bluetooth::register --> encap : register
+bluetooth::register --> vendor : register
+bluetooth::handoff --> wtap_encap : add
+bluetooth::handoff --> usb_product : add
+bluetooth::handoff --> usb_protocol : add
+bluetooth::handoff --> llc_bluetooth_pid : add
+
+btad_gaen::handoff --> btcommon_eir_ad_entry_uuid : add
+btad_matter::handoff --> btcommon_eir_ad_entry_uuid : add
+
+rectangle "packet-bt3ds" {
+  Class bt3ds
+  bt3ds : register()
+  bt3ds : handoff()
+}
+
+map "btl2cap.psm" as btl2cap_psm {
+ uint => Handle
+ ... => ...
+}
+
+bt3ds::handoff --> bluetooth_uuid : add
+bt3ds::handoff --> btl2cap_psm : add
+
+rectangle "packet-btatt" {
+  Class btatt
+  btatt : register()
+  btatt : handoff()
+
+  Class btgatt
+  btgatt : register()
+  btgatt : handoff()
+  
+  btatt --[hidden]> btgatt
+}
+
+map "btatt.handle" as btatt_handle {
+ uint16 => Handle
+ ... => ...
+}
+
+map "btatt.service" as btatt_service {
+ uint16 => Handle
+ ... => ...
+}
+
+map "btl2cap.cid" as btl2cap_cid {
+ uint => Handle
+ ... => ...
+}
+
+btatt::register --> btatt_handle : register
+btatt::register --> btatt_service : register
+btatt::handof --> btl2cap_psm : add
+btatt::handof --> btl2cap_cid : add
+
+btgatt::handoff -> bluetooth_uuid : add
+
+rectangle "packet-btavctp" {
+  Class btavctp
+  btavctp : register()
+  btavctp : handoff()
+}
+btavctp::handoff --> bluetooth_uuid : add
+btavctp::handoff --> btl2cap_psm : add
+
+rectangle "packet-btavdtp" {
+  Class btavdtp
+  btavdtp : register()
+  btavdtp : handoff()
+
+  Class bta2dp
+  bta2dp : register()
+  bta2dp : handoff()
+
+  Class btvdp
+  btvdp : register()
+  btvdp : handoff()
+  
+  btavdtp --[hidden]> bta2dp
+  bta2dp --[hidden]> btvdp
+
+}
+btavdtp::handoff --> bluetooth_uuid : add
+btavdtp::handoff --> btl2cap_psm : add
+bta2dp::handoff --> bluetooth_uuid : add
+btvdp::handoff --> bluetooth_uuid : add
+
+rectangle "packet-btavrcp" {
+  Class btavrcp
+  btavrcp : register()
+  btavrcp : handoff()
+}
+btavrcp::handoff --> bluetooth_uuid : add
+
+rectangle "packet-btbnep" {
+  Class btbnep
+  btbnep : register()
+  btbnep : handoff()
+}
+btbnep::handoff --> bluetooth_uuid : add
+btbnep::handoff --> btl2cap_psm : add
+
+rectangle "packet-bthcrp" {
+  Class bthcrp
+  bthcrp : register()
+  bthcrp : handoff()
+}
+bthcrp::handoff --> bluetooth_uuid : add
+
+rectangle "packet-bthfp" {
+  Class bthfp
+  bthfp : register()
+  bthfp : handoff()
+}
+bthfp::handoff --> bluetooth_uuid : add
+
+rectangle "packet-bthid" {
+  Class bthid
+  bthid : register()
+  bthid : handoff()
+}
+bthid::handoff --> bluetooth_uuid : add
+bthid::handoff --> btl2cap_psm : add
+
+rectangle "packet-bthsp" {
+  Class bthsp
+  bthsp : register()
+  bthsp : handoff()
+}
+bthsp::handoff --> bluetooth_uuid : add
+
+rectangle "packet-btmcap" {
+  Class btmcap
+  btmcap : register()
+  btmcap : handoff()
+}
+btmcap::handoff --> bluetooth_uuid : add
+
+rectangle "packet-btfrcomm" {
+  Class btfrcomm
+  btfrcomm : register()
+  btfrcomm : handoff()
+  Class btdun
+  btdun : register()
+  btdun : handoff()
+  Class btspp
+  btspp : register()
+  btspp : handoff()
+  Class btgnss
+  btgnss : register()
+  btgnss : handoff()
+  
+  btfrcomm --[hidden]> btdun
+  btdun --[hidden]> btspp
+  btspp --[hidden]> btgnss
+
+}
+
+map "btrfcom.dlci" as btrfcom_dlci {
+ uint => Handle
+ ... => ...
+}
+
+btfrcomm::register --> btrfcom_dlci : register
+btfrcomm::handoff --> btl2cap_psm : add
+btdun::handoff --> bluetooth_uuid : add
+btspp::handoff --> bluetooth_uuid : add
+btgnss::handoff --> bluetooth_uuid : add
+
+rectangle "packet-btsap" {
+  Class btsap
+  btsap : register()
+  btsap : handoff()
+}
+btsap::handoff --> bluetooth_uuid : add
+
+rectangle "packet-obex" {
+  Class obex
+  obex : register()
+  obex : handoff()
+}
+
+map "obex.profile" as obex_profile {
+ uint8 => Handle
+ ... => ...
+}
+
+map "media_type" as media_type {
+ String => Handle
+ ... => ...
+}
+
+obex::register --> obex_profile : register
+obex::handoff --> bluetooth_uuid : add
+obex::handoff --> obex_profile : add
+obex::handoff --> media_type : add
+
+rectangle "packet-zbee-direct" {
+  Class zbee_direct
+  zbee-zbee_direct : register()
+  zbee-zbee_direct : handoff()
+}
+zbee_direct::handoff --> bluetooth_uuid : add
+@enduml

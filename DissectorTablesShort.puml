@@ -1,0 +1,176 @@
+@startuml
+' An effort to show all the dissectors and dissector tables involved in Wireshark Bluetooth dissection,
+' but limited to what is involved in BTGATT. Simplified version of Dissectortable.puml.
+
+left to right direction
+ 
+rectangle "packet_bluetooth" {
+  Class bluetooth
+  bluetooth : register()
+  bluetooth : handoff()
+  
+  Class btad_apple_ibeacon
+  btad_apple_ibeacon : register()
+  btad_apple_ibeacon : handoff()
+  
+  Class btad_alt_beacon
+  btad_alt_beacon : register()
+  btad_alt_beacon : handoff()
+  
+  Class btad_gaen
+  btad_gaen : register()
+  btad_gaen : handoff()
+  
+  Class btad_matter
+  btad_matter : register()
+  btad_matter : handoff()
+  
+  bluetooth --[hidden]> btad_apple_ibeacon
+  btad_apple_ibeacon --[hidden]> btad_alt_beacon
+  btad_alt_beacon --[hidden]> btad_gaen
+  btad_gaen --[hidden]> btad_matter
+}
+
+
+
+map "bluetooth.uuid" as bluetooth_uuid {
+ UUID => Handle
+ 110a => bta2dp_handle
+ 1120 => obex_handle
+ "6e400002-b5a3-f393-e0a9-e50e24dcca9e" => dissect_btgatt_nordic_uart_tx
+ ... => ...
+}
+
+map "bluetooth.encap" as encap {
+ uint32 => Handle
+ ... => ...
+}
+
+map "bluetooth.vendor" as vendor {
+ uint16 => Handle
+ ... => ...
+}
+
+map "wtap_encap" as wtap_encap {
+ uint => Handle
+ ... => ...
+}
+
+map "usb.product" as usb_product {
+ uint => Handle
+ ... => ...
+}
+
+map "usb.protocol" as usb_protocol {
+ uint => Handle
+ ... => ...
+}
+
+map "llc.bluetooth_pid" as llc_bluetooth_pid {
+ uint => Handle
+ ... => ...
+}
+
+
+map "btcommon.eir_ad.entry.uuid" as btcommon_eir_ad_entry_uuid {
+ UUID => Handle
+ fd6f => btad_gaen
+ fff6 => btad_matter
+ ... => ...
+}
+
+
+
+bluetooth::register --> bluetooth_uuid : register
+bluetooth::register --> encap : register
+bluetooth::register --> vendor : register
+bluetooth::handoff --> wtap_encap : add
+bluetooth::handoff --> usb_product : add
+bluetooth::handoff --> usb_protocol : add
+bluetooth::handoff --> llc_bluetooth_pid : add
+
+btad_gaen::handoff --> btcommon_eir_ad_entry_uuid : add
+btad_matter::handoff --> btcommon_eir_ad_entry_uuid : add
+
+
+rectangle "packet-btatt" {
+  Class btatt
+  btatt : register()
+  btatt : handoff()
+  btatt : dissect()
+
+  Class btgatt
+  btgatt : register()
+  btgatt : handoff()
+  btatt : dissect()
+  
+  btatt --[hidden]> btgatt
+}
+
+map "btatt.handle" as btatt_handle {
+ uint16 => Handle
+ ... => ...
+}
+
+map "btatt.service" as btatt_service {
+ uint16 => Handle
+ ... => ...
+}
+
+map "btl2cap.psm" as btl2cap_psm {
+ uint => Handle
+ ... => ...
+}
+
+map "btl2cap.cid" as btl2cap_cid {
+ uint => Handle
+ ... => ...
+}
+
+btatt::register --> btatt_handle : register
+btatt::register --> btatt_service : register
+btatt::handof --> btl2cap_psm : add
+btatt::handof --> btl2cap_cid : add
+
+btatt::handof --> btl2cap_cid : add
+
+btatt::dissect -> btatt_service : dissect
+btatt::dissect -> btatt_handle : dissect
+btatt::dissect -> bluetooth_uuid : dissect
+btgatt::dissect -> btatt_service : dissect
+btgatt::dissect -> bluetooth_uuid : dissect
+
+rectangle "packet-btl2cap" {
+  Class btl2cap
+  btl2cap : register()
+  btl2cap : handoff()
+  btl2cap : dissect()
+}
+btl2cap::register --> btl2cap_psm : register
+btl2cap::register --> btl2cap_cid : register
+btl2cap::dissect --> btl2cap_cid : dissect
+btl2cap::dissect --> btl2cap_psm : dissect
+btl2cap::dissect --> bluetooth_uuid : dissect
+
+rectangle "packet-bthci-acl" {
+  Class bthci_acl
+  bthci_acl : register()
+  bthci_acl : handoff()
+  bthci_acl : dissect()
+}
+
+map "hci_h4.type" as hci_h4_type {
+ uint => Handle
+ ... => ...
+}
+
+map "hci_h1.type" as hci_h1_type {
+ uint => Handle
+ ... => ...
+}
+
+bthci_acl::handof --> hci_h4_type : add
+bthci_acl::handof --> hci_h1_type : add
+
+
+@enduml

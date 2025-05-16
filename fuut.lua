@@ -1184,6 +1184,54 @@ and
 --]]
 
 
+
+--[[
+The alternative is to implement the reassembly ourselves.
+In order to reaasemble the 2 parts of the CDR Record,
+we need to know which CDR Record part was returned before.
+g_CDRRecordDataOnLine is populated with the CDR Record data and
+packet number for each packet containing a CDR Record response.
+That way, when a packet needs to know the first part of the CDR Record data, 
+it can lookup the table.
+g_CDRRecordDataOnLine is not sorted.
+g_CDRRecordDataOnLineSorted is used to sort according to packet number.
+See https://www.lua.org/pil/19.3.html for the algorithm.
+
+--]]
+
+
+
+local g_CDRRecordDataOnLine = {}
+local g_CDRRecordDataOnLineSorted = {}
+
+function AddCDRRecordData(number, data)
+    g_CDRRecordDataOnLine[number] = data
+    SortCDRRecordData()
+end
+
+function SortCDRRecordData()
+    g_CDRRecordDataOnLineSorted = {}
+    for n in pairs(g_CDRRecordDataOnLine) do
+        table.insert(g_CDRRecordDataOnLineSorted, n)
+    end
+    table.sort(g_CDRRecordDataOnLineSorted)
+end
+
+function GetLastCDRRecordData(number)
+
+    local lastCDRRecordDataNumber = 0
+    for i, pnum in ipairs(g_CDRRecordDataOnLineSorted) do
+        if pnum < number then
+            lastCDRRecordDataNumber = pnum
+        end
+    end
+
+    local lastCDRRecordData = g_CDRRecordDataOnLine[lastCDRRecordDataNumber]
+
+    return lastCDRRecordData
+end
+
+
 local p_nexxt_cdrr = Proto("nexxt_cdrr", "Nexxtender CDR Record")
 
 local f_cdrr_unknown1 = ProtoField.uint32("cdrr.unknown1", "Unknown1", base.HEX)
@@ -1216,7 +1264,26 @@ p_nexxt_cdrr.experts = {
 }
 
 function p_nexxt_cdrr.dissector(buf, pinfo, tree)
-    print("p_nexxt_cdrr.dissector: ", buf:bytes():tohex())
+    length = buf:len()
+    if length == 22 then
+	    pinfo.cols.protocol = p_nexxt_cdrr.name
+		AddCDRRecordData(pinfo.number, buf:bytes())
+		return 0
+	elseif length == 10 then
+	    pinfo.cols.protocol = p_nexxt_cdrr.name
+	    local lastCDRRecordData = GetLastCDRRecordData(pinfo.number)
+		local completeCDRRecordData = lastCDRRecordData + buf:bytes()
+		local completeCDRRecordDataBuf = ByteArray.tvb(completeCDRRecordData, "Reassembled CDR Record")
+		tree:add(completeCDRRecordDataBuf, "Reassembled CDR Record")
+	else
+		return
+    end
+end
+	
+	
+function cdrr_dissector(buf, pinfo, tree)
+	
+	
     length = buf:len()
     if length ~= 32 then
         return
@@ -1347,6 +1414,32 @@ function p_nexxt_ccdtr.dissector(buf, pinfo, tree)
         treeitem:add_proto_expert_info(f_ccdtr_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
 end
+
+------------------------------------------------------------------------------
+-- Wrapper dissector for Blob response of CDR Record
+-------------------------------------------------------------------------------
+local p_btatt_wrapper = Proto("btatt_wrapper", "btatt wrapper catching Read blob response")
+
+local f_btatt_wrapper_activated1 = ProtoField.bool("btatt_wrapper.activated1", "Wrapper 1 activated?")
+local f_btatt_wrapper_activated2 = ProtoField.bool("btatt_wrapper.activated2", "Wrapper  2 activated?")
+
+p_btatt_wrapper.fields = {
+    f_btatt_wrapper_activated1,
+    f_btatt_wrapper_activated2,
+}
+
+local original_btatt_dissector
+
+function p_btatt_wrapper.dissector(buf, pinfo, tree)
+    print("p_btatt_wrapper.dissector 1: ", buf:bytes():tohex())
+	local subtreeitem1 = tree:add(p_btatt_wrapper, buf)
+	subtreeitem1:add(f_btatt_wrapper_activated1, buf(), true)
+	original_btatt_dissector:call(buf, pinfo, tree)
+	local subtreeitem2 = tree:add(p_btatt_wrapper, buf)
+	subtreeitem2:add(f_btatt_wrapper_activated2, buf(), true)
+    print("p_btatt_wrapper.dissector 2: ", buf:bytes():tohex())
+end
+
 
 -------------------------------------------------------------------------------
 -- Registering all dissectors
