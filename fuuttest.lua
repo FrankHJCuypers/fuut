@@ -1,3 +1,11 @@
+--[[
+Simple dissector wrapper that wraps the existing dissector with reference 0x0004 in the "btl2cap.cid"
+dissector table.
+The wrapper p_btatt_wrapper.dissector() does only call the previously registered dissector,
+so I would expect the same behavior with or without this wrapper.
+But with the wrapper, handles are no longer translated to UUIDs.
+Why?
+--]]
 local p_btatt_wrapper = Proto("btatt_wrapper", "btatt wrapper test")
 
 local f_btatt_wrapper_activated1 = ProtoField.bool("btatt_wrapper.activated1", "Wrapper 1 activated?")
