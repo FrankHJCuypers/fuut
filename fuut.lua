@@ -1152,6 +1152,38 @@ end
 -------------------------------------------------------------------------------
 -- CDR Record Characteristic 
 -------------------------------------------------------------------------------
+--[[
+The CDR Record characteristic value is 32 bytes long.
+That is too long for a single HCI command.
+The protocol stack between the Nexxtmove app and the Nexxtender charger,
+involves the following layers, from low to high:
+1 HCI H4, max 32 bytes, including 1 header byte
+2 HCI ACL, max 31 bytes, including 4 header bytes
+3 L2CAP, max 27 bytes, including 4 header bytes
+4 ATT, max 23 bytes, minus 1 header byte
+5 GATT data: 22 bytes.
+
+So maximum 22 GATT data bytes can be carried in a single HCI H4 frame.
+BLE does offer the HCI ACL "Reassemble ACL fragments option" that would allow 
+the ACL layer to accept longer GATT data and split it in multiple HCI ACL frames.
+The receiver then reassembles the individual HCI ACL frames in a single, larger, 
+GATT data frame.
+The Wireshark BLE dissectors support this mechanism.
+
+However, the Nexxtender charger does not seem to use the HCI ACL 
+"Reassemble ACL fragments option" of bluetooth.
+The Nexxtender charger splits the GATT CDR Record itself:
+1. At the Read Request, the Nexxtender charger only returns the first 22 bytes of the CDR Record.
+2. The Nexxtmove app then does a Read Blob Request at offset 22 of the CDR record, returning the remaining 10 bytes.
+
+This way of working is implemented by the Wireshark BLE dissectors, 
+but only for a few attributes with a 16-bit UUID, not for general 128-bit UUIDs.
+See [Support long_attribute_value for proprietary 128-bit UUIDs BTGATT attribute values](https://gitlab.com/wireshark/wireshark/-/issues/20537)
+and 
+[My Lua BLE dissector is not called for a GATT Read Blob Response](https://ask.wireshark.org/question/36994/my-lua-ble-dissector-is-not-called-for-a-gatt-read-blob-response/).
+--]]
+
+
 local p_nexxt_cdrr = Proto("nexxt_cdrr", "Nexxtender CDR Record")
 
 local f_cdrr_unknown1 = ProtoField.uint32("cdrr.unknown1", "Unknown1", base.HEX)
