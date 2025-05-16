@@ -13,7 +13,6 @@ See the GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with this program.
 If not, see <http://www.gnu.org/licenses/>.
 --]]
-print("fuut.lua start")
 
 -------------------------------------------------------------------------------
 -- Lua Wireshark Dissector for Nexxtender charger BLE
@@ -28,8 +27,8 @@ print("fuut.lua start")
 -- Also known as CRC-16-IBM, Bisync, USB, ANSI X3.28, SIA DC-07,...
 -- Not the fastest implementation, but simple
 -------------------------------------------------------------------------------
-local polynomial = 0x8005
-local initial_value = 0xFFFF
+-- local polynomial = 0x8005
+-- local initial_value = 0xFFFF
 
 local function crc16_modbus(data, start, len)
     local crc = 0xFFFF
@@ -47,22 +46,22 @@ local function crc16_modbus(data, start, len)
     return crc
 end
 
-local function crc16_modbus_alternative(data, start, len)
-    local crc = 0xFFFF
-    for i = start, start + len - 1 do
-        local b = data:get_index(i)
-        for j = 0, 7 do
-            local bit = (b >> j) & 0x0001
-            local c15 = (crc >> 15) & 0x0001
-            crc = (crc << 1) & 0xFFFF
-            if ((c15 ~ bit) & 0x0001) == 1 then
-                crc = crc ~ 0x8005
-            end
-        end
-    end
-
-    return ((crc << 8) & 0xFFFF) | (crc >> 8)
-end
+-- local function crc16_modbus_alternative(data, start, len)
+--    local crc = 0xFFFF
+--    for i = start, start + len - 1 do
+--        local b = data:get_index(i)
+--        for j = 0, 7 do
+--            local bit = (b >> j) & 0x0001
+--            local c15 = (crc >> 15) & 0x0001
+--            crc = (crc << 1) & 0xFFFF
+--            if ((c15 ~ bit) & 0x0001) == 1 then
+--                crc = crc ~ 0x8005
+--            end
+--        end
+--    end
+--
+--    return ((crc << 8) & 0xFFFF) | (crc >> 8)
+-- end
 
 -------------------------------------------------------------------------------
 -- Charging Service
@@ -71,13 +70,11 @@ end
 local p_nexxt_charging = Proto("nexxt_charge_s", "Nexxtender Charging Service")
 
 function p_nexxt_charging.dissector(buf, pinfo, tree)
-    print("p_nexxt_charging.dissector")
 end
 
 -------------------------------------------------------------------------------
 -- Charging Basic Data Characteristic
 -------------------------------------------------------------------------------
-print("fuut.lua defining Charging Basic Data")
 
 local p_nexxt_cbd = Proto("nexxt_cbd", "Nexxtender Charging Basic Data")
 
@@ -113,7 +110,6 @@ p_nexxt_cbd.fields = {
 }
 
 function p_nexxt_cbd.dissector(buf, pinfo, tree)
-    print("p_nexxt_cbd.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 14 then
         return
@@ -129,12 +125,10 @@ function p_nexxt_cbd.dissector(buf, pinfo, tree)
     subtree:add_le(f_cbd_phasecount, buf(13, 1))
 end
 
-print("fuut.lua defined Charging Basic Data")
 
 -------------------------------------------------------------------------------
 -- Charging Grid Data Characteristic
 -------------------------------------------------------------------------------
-print("fuut.lua defining Charging Grid Data")
 local p_nexxt_cgd = Proto("nexxt_cgd", "Nexxtender Charging Grid Data")
 
 local f_cgd_timestamp = ProtoField.absolute_time("cgd.timestamp", "Timestamp", base.LOCAL)
@@ -161,7 +155,6 @@ p_nexxt_cgd.experts = {
 }
 
 function p_nexxt_cgd.dissector(buf, pinfo, tree)
-    print("p_nexxt_cgd.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 16 then
         return
@@ -179,18 +172,15 @@ function p_nexxt_cgd.dissector(buf, pinfo, tree)
 
     local computedCrc = crc16_modbus(buf:bytes(), 0, 14)
     local receivedCrc = buf:bytes(14, 2):le_uint()
-    print("Computed crc: " .. string.format("0x%04x", computedCrc))
     if (receivedCrc ~= computedCrc) then
         treeitem:add_proto_expert_info(f_cgd_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
 end
 
-print("fuut.lua defined Charging Grid Data")
 
 -------------------------------------------------------------------------------
 -- Charging Car Data Characteristic
 -------------------------------------------------------------------------------
-print("fuut.lua defining Charging Car Data")
 local p_nexxt_ccd = Proto("nexxt_ccd", "Nexxtender Charging Car Data")
 
 local f_ccd_timestamp = ProtoField.absolute_time("ccd.timestamp", "Timestamp", base.LOCAL)
@@ -219,7 +209,6 @@ p_nexxt_ccd.experts = {
     f_ccd_crcIncorrect
 }
 function p_nexxt_ccd.dissector(buf, pinfo, tree)
-    print("p_nexxt_ccd.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 18 then
         return
@@ -237,18 +226,15 @@ function p_nexxt_ccd.dissector(buf, pinfo, tree)
 
     local computedCrc = crc16_modbus(buf:bytes(), 0, 16)
     local receivedCrc = buf:bytes(16, 2):le_uint()
-    print("Computed crc: " .. string.format("0x%04x", computedCrc))
     if (receivedCrc ~= computedCrc) then
         treeitem:add_proto_expert_info(f_ccd_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
 end
 
-print("fuut.lua defined Charging Grid Data")
 
 -------------------------------------------------------------------------------
 -- Charging Advanced Data Characteristic
 -------------------------------------------------------------------------------
-print("fuut.lua defining Charging Advanced Data")
 local p_nexxt_cad = Proto("nexxt_cad", "Nexxtender Charging Advanced Data")
 
 local f_cad_timestamp = ProtoField.absolute_time("cad.timestamp", "Timestamp", base.LOCAL)
@@ -282,7 +268,7 @@ p_nexxt_cad.experts = {
 }
 
 function p_nexxt_cad.dissector(buf, pinfo, tree)
-    print("p_nexxt_cad.dissector: ", buf:bytes():tohex())
+	print("Executing  p_nexxt_cad.dissector")
     length = buf:len()
     if length ~= 18 then
         return
@@ -299,13 +285,11 @@ function p_nexxt_cad.dissector(buf, pinfo, tree)
 
     local computedCrc = crc16_modbus(buf:bytes(), 0, 16)
     local receivedCrc = buf:bytes(16, 2):le_uint()
-    print("Computed crc: " .. string.format("0x%04x", computedCrc))
     if (receivedCrc ~= computedCrc) then
         treeitem:add_proto_expert_info(f_cad_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
 end
 
-print("fuut.lua defined Charging Advanced Data")
 
 -------------------------------------------------------------------------------
 -- Generic/CDR Service
@@ -313,7 +297,6 @@ print("fuut.lua defined Charging Advanced Data")
 local p_nexxt_generic_cdr = Proto("nexxt_generic_cdr_s", "Nexxtender Generic/CDR Service")
 
 function p_nexxt_generic_cdr.dissector(buf, pinfo, tree)
-    print("p_nexxt_generic_cdr.dissector")
 end
 
 local genericOperationValues = {
@@ -337,14 +320,11 @@ local g_genericOperationTypeOnLine = {}
 local g_genericOperationTypeOnLineSorted = {}
 
 function AddGenericOperationType(number, operationType)
-    print("AddGenericOperationType number, operationType", number, operationType)
     g_genericOperationTypeOnLine[number] = operationType
     SortGenericOperationType()
-    Print_g_genericOperationTypeOnLine()
 end
 
 function SortGenericOperationType()
-    print("SortGenericOperationType")
     g_genericOperationTypeOnLineSorted = {}
     for n in pairs(g_genericOperationTypeOnLine) do
         table.insert(g_genericOperationTypeOnLineSorted, n)
@@ -353,7 +333,6 @@ function SortGenericOperationType()
 end
 
 function GetLastOperationType(number)
-    print("GetLastOperationType number:", number)
 
     local lastOperationTypeNumber = 0
     for i, pnum in ipairs(g_genericOperationTypeOnLineSorted) do
@@ -364,7 +343,6 @@ function GetLastOperationType(number)
 
     local lastOperationType = g_genericOperationTypeOnLine[lastOperationTypeNumber]
 
-    print("GetLastOperationType found:", lastOperationType)
     return lastOperationType
 end
 
@@ -401,7 +379,6 @@ p_nexxt_gcl.fields = {
 }
 
 function p_nexxt_gcl.dissector(buf, pinfo, tree)
-    print("p_nexxt_cgl.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -431,7 +408,6 @@ p_nexxt_gce.fields = {
 }
 
 function p_nexxt_gce.dissector(buf, pinfo, tree)
-    print("p_nexxt_cge.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -461,7 +437,6 @@ p_nexxt_gcm.fields = {
 }
 
 function p_nexxt_gcm.dissector(buf, pinfo, tree)
-    print("p_nexxt_cgm.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -494,7 +469,6 @@ p_nexxt_gcb.fields = {
 }
 
 function p_nexxt_gcb.dissector(buf, pinfo, tree)
-    print("p_nexxt_cgb.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -524,7 +498,6 @@ p_nexxt_gct.fields = {
 }
 
 function p_nexxt_gct.dissector(buf, pinfo, tree)
-    print("p_nexxt_cgt.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -556,7 +529,6 @@ p_nexxt_gcc.fields = {
 }
 
 function p_nexxt_gcc.dissector(buf, pinfo, tree)
-    print("p_nexxt_cgc.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -581,10 +553,8 @@ local gcDissectors = {
     [0x50] = p_nexxt_gcc.dissector
 }
 
-print("fuut.lua defining Generic Command")
 
 function p_nexxt_gc.dissector(buf, pinfo, tree)
-    print("p_nexxt_gc.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -592,9 +562,7 @@ function p_nexxt_gc.dissector(buf, pinfo, tree)
     pinfo.cols.protocol = p_nexxt_gc.name
     local operationType = buf(1, 1):uint()
     AddGenericOperationType(pinfo.number, operationType)
-    Print_g_genericOperationTypeOnLine()
 
-    print("p_nexxt_gc.dissector sets operationType:", operationType, " for number ", pinfo.number)
 
     local dissector = gcDissectors[operationType]
 
@@ -623,7 +591,6 @@ p_nexxt_gsl.fields = {
 }
 
 function p_nexxt_gsl.dissector(buf, pinfo, tree)
-    print("p_nexxt_gsl.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -648,7 +615,6 @@ p_nexxt_gse.fields = {
 }
 
 function p_nexxt_gse.dissector(buf, pinfo, tree)
-    print("p_nexxt_gse.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -673,7 +639,6 @@ p_nexxt_gsm.fields = {
 }
 
 function p_nexxt_gsm.dissector(buf, pinfo, tree)
-    print("p_nexxt_gsm.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -708,7 +673,6 @@ p_nexxt_gsb.fields = {
 }
 
 function p_nexxt_gsb.dissector(buf, pinfo, tree)
-    print("p_nexxt_gsb.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -739,7 +703,6 @@ p_nexxt_gst.fields = {
 }
 
 function p_nexxt_gst.dissector(buf, pinfo, tree)
-    print("p_nexxt_gst.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -773,7 +736,6 @@ p_nexxt_gsc.fields = {
 }
 
 function p_nexxt_gsc.dissector(buf, pinfo, tree)
-    print("p_nexxt_gsc.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -798,10 +760,8 @@ local gsDissectors = {
     [0x50] = p_nexxt_gsc.dissector
 }
 
-print("fuut.lua defining Generic Generic Status")
 
 function p_nexxt_gs.dissector(buf, pinfo, tree)
-    print("p_nexxt_gs.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 2 then
         return
@@ -809,9 +769,7 @@ function p_nexxt_gs.dissector(buf, pinfo, tree)
     pinfo.cols.protocol = p_nexxt_gs.name
     local operationType = buf(1, 1):uint()
     AddGenericOperationType(pinfo.number, operationType)
-    Print_g_genericOperationTypeOnLine()
 
-    print("p_nexxt_gs.dissector sets operationType:", operationType, " for number ", pinfo.number)
     local dissector = gsDissectors[operationType]
 
     if dissector ~= nil then
@@ -825,7 +783,6 @@ end
 local p_nexxt_gdl = Proto("nexxt_gdl", "Nexxtender Generic Data: Loader")
 
 function p_nexxt_gdl.dissector(buf, pinfo, tree)
-    print("p_nexxt_gdl.dissector: ", buf:bytes():tohex())
     -- nothing: there are no Generic Data Characteristics for the Loader
 end
 
@@ -858,7 +815,6 @@ p_nexxt_gde.experts = {
 }
 
 function p_nexxt_gde.dissector(buf, pinfo, tree)
-    print("p_nexxt_gde.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 20 then
         return
@@ -873,7 +829,6 @@ function p_nexxt_gde.dissector(buf, pinfo, tree)
     local treeitem = subtree:add_le(f_gde_crc16, buf(18, 2))
     local computedCrc = crc16_modbus(buf:bytes(), 0, 18)
     local receivedCrc = buf:bytes(18, 2):le_uint()
-    print("Computed crc: " .. string.format("0x%04x", computedCrc))
     if (receivedCrc ~= computedCrc) then
         treeitem:add_proto_expert_info(f_gde_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
@@ -891,7 +846,6 @@ p_nexxt_gdm.fields = {
 }
 
 function p_nexxt_gdm.dissector(buf, pinfo, tree)
-    print("p_nexxt_gdm.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 20 then
         return
@@ -915,7 +869,6 @@ p_nexxt_gdb.fields = {
 }
 
 function p_nexxt_gdb.dissector(buf, pinfo, tree)
-    print("p_nexxt_gdb.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if (length ~= 4) and (length ~= 7) and (length ~= 10) then
         return
@@ -938,7 +891,6 @@ p_nexxt_gdt.fields = {
 }
 
 function p_nexxt_gdt.dissector(buf, pinfo, tree)
-    print("p_nexxt_gdt.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if (length ~= 4) then
         return
@@ -986,7 +938,6 @@ p_nexxt_gdc1_0.experts = {
 }
 
 function p_nexxt_gdc1_0.dissector(buf, pinfo, tree)
-    print("p_nexxt_gdc1_0.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if (length ~= 13) then
         return
@@ -1003,7 +954,6 @@ function p_nexxt_gdc1_0.dissector(buf, pinfo, tree)
     local treeitem = subtree:add_le(f_gdc1_0_crc16, buf(11, 2))
     local computedCrc = crc16_modbus(buf:bytes(), 0, 11)
     local receivedCrc = buf:bytes(11, 2):le_uint()
-    print("Computed crc: " .. string.format("0x%04x", computedCrc))
     if (receivedCrc ~= computedCrc) then
         treeitem:add_proto_expert_info(f_gdc1_0_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
@@ -1055,7 +1005,6 @@ function touString(timeInMinutes)
 end
 
 function p_nexxt_gdc1_1.dissector(buf, pinfo, tree)
-    print("p_nexxt_gdc1_1.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if (length ~= 15) then
         return
@@ -1074,7 +1023,6 @@ function p_nexxt_gdc1_1.dissector(buf, pinfo, tree)
     local treeitem = subtree:add_le(f_gdc1_1_crc16, buf(13, 2))
     local computedCrc = crc16_modbus(buf:bytes(), 0, 13)
     local receivedCrc = buf:bytes(13, 2):le_uint()
-    print("Computed crc: " .. string.format("0x%04x", computedCrc))
     if (receivedCrc ~= computedCrc) then
         treeitem:add_proto_expert_info(f_gdc1_1_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
@@ -1096,7 +1044,6 @@ p_nexxt_gdcCBOR.experts = {
     f_gdcCBOR_crcIncorrect
 }
 function p_nexxt_gdcCBOR.dissector(buf, pinfo, tree)
-    print("p_nexxt_gdcCBOR.dissector: ", buf:bytes():tohex())
     pinfo.cols.protocol = p_nexxt_gdcCBOR.name
     local subtree = tree:add(p_nexxt_gdcCBOR, buf())
     cborDissector = Dissector.get("cbor")
@@ -1106,7 +1053,6 @@ function p_nexxt_gdcCBOR.dissector(buf, pinfo, tree)
     local treeitem = subtree:add_le(f_gdcCBOR_crc16, buf(dataLength, 2))
     local computedCrc = crc16_modbus(buf:bytes(), 0, dataLength)
     local receivedCrc = buf:bytes(dataLength, 2):le_uint()
-    print("Computed crc: " .. string.format("0x%04x", computedCrc))
     if (receivedCrc ~= computedCrc) then
         treeitem:add_proto_expert_info(f_gdcCBOR_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
@@ -1120,7 +1066,6 @@ local p_nexxt_gdc = Proto("nexxt_gdc", "Nexxtender Generic Data: Config")
 local f_gdt_timeStamp = ProtoField.absolute_time("gdt.TimeStamp", "TimeStamp", base.LOCAL)
 
 function p_nexxt_gdc.dissector(buf, pinfo, tree)
-    print("p_nexxt_gdc.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if (length == 13) then
         p_nexxt_gdc1_0.dissector(buf, pinfo, tree)
@@ -1145,14 +1090,11 @@ local gdDissectors = {
     [0x50] = p_nexxt_gdc.dissector
 }
 
-print("fuut.lua defining Generic/CDR Generic Data")
 
 function p_nexxt_gd.dissector(buf, pinfo, tree)
-    print("p_nexxt_gd.dissector: ", buf:bytes():tohex())
     length = buf:len()
     pinfo.cols.protocol = p_nexxt_gd.name
     local lastOperationType = GetLastOperationType(pinfo.number)
-    print("p_nexxt_gd.dissector using lastOperationType:", lastOperationType)
     local dissector = gdDissectors[lastOperationType]
 
     if dissector ~= nil then
@@ -1160,7 +1102,6 @@ function p_nexxt_gd.dissector(buf, pinfo, tree)
     end
 end
 
-print("fuut.lua defined Generic/CDR Generic Command")
 
 -------------------------------------------------------------------------------
 -- CDR Command Characteristic
@@ -1178,7 +1119,6 @@ p_nexxt_cdrc.fields = {
 
 
 function p_nexxt_cdrc.dissector(buf, pinfo, tree)
-    print("p_nexxt_cdrc.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 1 then
         return
@@ -1200,7 +1140,6 @@ p_nexxt_cdrs.fields = {
 }
 
 function p_nexxt_cdrs.dissector(buf, pinfo, tree)
-    print("p_nexxt_cdrs.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 4 then
         return
@@ -1263,13 +1202,11 @@ function p_nexxt_cdrr.dissector(buf, pinfo, tree)
     local treeitem = subtree:add_le(f_cdrr_crc16, buf(30, 2))
     local computedCrc = crc16_modbus(buf:bytes(), 0, 30)
     local receivedCrc = buf:bytes(30, 2):le_uint()
-    print("Computed crc: " .. string.format("0x%04x", computedCrc))
     if (receivedCrc ~= computedCrc) then
         treeitem:add_proto_expert_info(f_cdrr_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
 end
 
-print("fuut.lua defined CDR Command")
 
 -------------------------------------------------------------------------------
 -- CCDT Command Characteristic
@@ -1287,7 +1224,6 @@ p_nexxt_ccdtc.fields = {
 
 
 function p_nexxt_ccdtc.dissector(buf, pinfo, tree)
-    print("p_nexxt_ccdtc.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 1 then
         return
@@ -1309,7 +1245,6 @@ p_nexxt_ccdts.fields = {
 }
 
 function p_nexxt_ccdts.dissector(buf, pinfo, tree)
-    print("p_nexxt_ccdts.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 4 then
         return
@@ -1360,7 +1295,6 @@ p_nexxt_ccdtr.experts = {
 }
 
 function p_nexxt_ccdtr.dissector(buf, pinfo, tree)
-    print("p_nexxt_ccdtr.dissector: ", buf:bytes():tohex())
     length = buf:len()
     if length ~= 16 then
         return
@@ -1377,7 +1311,6 @@ function p_nexxt_ccdtr.dissector(buf, pinfo, tree)
 	local treeitem = subtree:add_le(f_ccdtr_crc16, buf(14, 2))
     local computedCrc = crc16_modbus(buf:bytes(), 0, 14)
     local receivedCrc = buf:bytes(14, 2):le_uint()
-    print("Computed crc: " .. string.format("0x%04x", computedCrc))
     if (receivedCrc ~= computedCrc) then
         treeitem:add_proto_expert_info(f_ccdtr_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
     end
@@ -1387,7 +1320,6 @@ print("fuut.lua defined CDR Command")
 -------------------------------------------------------------------------------
 -- Registering all dissectors
 -------------------------------------------------------------------------------
-print("fuut.lua registering dissectors")
 
 local UUID_NEXXTENDER_BASE = "fd47416a-95fb-4206-88b5-b4a8045f75"
 local UUID_NEXXTENDER_CHARGING_SERVICE = UUID_NEXXTENDER_BASE .. "c1"
@@ -1409,33 +1341,18 @@ local p_nexxt = Proto("nexxt", "Nexxtender BLE GATT")
 
 local bt_dissector = DissectorTable.get("bluetooth.uuid")
 
-print("fuut.lua registering dissector p_nexxt_charging ")
 bt_dissector:add(UUID_NEXXTENDER_CHARGING_SERVICE, p_nexxt_charging)
-print("fuut.lua registering dissector p_nexxt_cbd ")
 bt_dissector:add(UUID_NEXXTENDER_CHARGING_BASIC_DATA_CHARACTERISTIC, p_nexxt_cbd)
-print("fuut.lua registering dissector p_nexxt_cgd ")
 bt_dissector:add(UUID_NEXXTENDER_CHARGING_GRID_DATA_CHARACTERISTIC, p_nexxt_cgd)
-print("fuut.lua registering dissector p_nexxt_ccd ")
 bt_dissector:add(UUID_NEXXTENDER_CHARGING_CAR_DATA_CHARACTERISTIC, p_nexxt_ccd)
-print("fuut.lua registering dissector p_nexxt_cad ")
 bt_dissector:add(UUID_NEXXTENDER_CHARGING_ADVANCED_DATA_CHARACTERISTIC, p_nexxt_cad)
-print("fuut.lua registering dissector p_nexxt_gc ")
 bt_dissector:add(UUID_NEXXTENDER_GENERIC_COMMAND_CHARACTERISTIC, p_nexxt_gc)
-print("fuut.lua registering dissector p_nexxt_gs ")
 bt_dissector:add(UUID_NEXXTENDER_GENERIC_STATUS_CHARACTERISTIC, p_nexxt_gs)
-print("fuut.lua registering dissector p_nexxt_gd ")
 bt_dissector:add(UUID_NEXXTENDER_GENERIC_DATA_CHARACTERISTIC, p_nexxt_gd)
-print("fuut.lua registering dissector p_nexxt_cdrc ")
 bt_dissector:add(UUID_NEXXTENDER_CDR_COMMAND_CHARACTERISTIC, p_nexxt_cdrc)
-print("fuut.lua registering dissector p_nexxt_cdrs ")
 bt_dissector:add(UUID_NEXXTENDER_CDR_STATUS_CHARACTERISTIC, p_nexxt_cdrs)
-print("fuut.lua registering dissector p_nexxt_cdrr ")
 bt_dissector:add(UUID_NEXXTENDER_CDR_RECORD_CHARACTERISTIC, p_nexxt_cdrr)
-print("fuut.lua registering dissector p_nexxt_cdrc ")
 bt_dissector:add(UUID_NEXXTENDER_CCDT_COMMAND_CHARACTERISTIC, p_nexxt_ccdtc)
-print("fuut.lua registering dissector p_nexxt_cdrs ")
 bt_dissector:add(UUID_NEXXTENDER_CCDT_STATUS_CHARACTERISTIC, p_nexxt_ccdts)
-print("fuut.lua registering dissector p_nexxt_cdrr ")
 bt_dissector:add(UUID_NEXXTENDER_CCDT_RECORD_CHARACTERISTIC, p_nexxt_ccdtr)
 
-print("fuut.lua end")
