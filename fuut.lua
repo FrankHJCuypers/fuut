@@ -1348,7 +1348,6 @@ function p_nexxt_ccdtr.dissector(buf, pinfo, tree)
     end
 end
 
-print("fuut.lua defined CDR Command")
 -------------------------------------------------------------------------------
 -- Registering all dissectors
 -------------------------------------------------------------------------------
