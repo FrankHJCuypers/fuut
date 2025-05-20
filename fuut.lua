@@ -1048,7 +1048,7 @@ function p_nexxt_gdcCBOR.dissector(buf, pinfo, tree)
     local subtree = tree:add(p_nexxt_gdcCBOR, buf())
     cborDissector = Dissector.get("cbor")
     -- TODO: complete and test. Requires a trace of the command.
-    cborDissector.dissector(buf, pinfo, tree)
+    cborDissector:call(buf, pinfo, tree)
     local dataLength = buf:len() - 2
     local treeitem = subtree:add_le(f_gdcCBOR_crc16, buf(dataLength, 2))
     local computedCrc = crc16_modbus(buf:bytes(), 0, dataLength)

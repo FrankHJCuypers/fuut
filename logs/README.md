@@ -54,5 +54,3 @@ The log contains a large amount Nexxtender messages, including:
     - Loader,  Time, Config
 - CDR records
 - CCDT records
-
-** TODO **: packet 1693 contains an error.
