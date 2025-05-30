@@ -283,7 +283,7 @@ do
         subtree:add_packet_field(f_cad_carPower, buf(10, 4), ENC_LITTLE_ENDIAN, "W")
         subtree:add_le(f_cad_authorizationStatus, buf(14, 1))
         subtree:add_le(f_cad_errorCode, buf(15, 1))
-        local treeitem = subtree:add_le(f_ccd_crc16, buf(16, 2))
+        local treeitem = subtree:add_le(f_cad_crc16, buf(16, 2))
 
         local computedCrc = crc16_modbus(buf:bytes(), 0, 16)
         local receivedCrc = buf:bytes(16, 2):le_uint()
