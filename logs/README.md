@@ -54,3 +54,12 @@ The log contains a large amount Nexxtender messages, including:
     - Loader,  Time, Config
 - CDR records
 - CCDT records
+
+## hci_snoop20250125165300 - cbor.cfa
+This log is the same one as `hci_snoop20250125165300.cfa`, but with 2 packets manually added at the end;
+10932 and 10933.
+These 2 packets allow to trigger the *p_nexxt_gdcCBOR.dissector()* in order to do some basic testing.
+The two packets are out of place, so the *Bluetooth HCI ACL Packet* layer will flag an 
+*Frame is out of any "connection handle" session* error.
+That doesn't prohibit the dissector to be called.
+
