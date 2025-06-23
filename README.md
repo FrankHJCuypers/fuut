@@ -36,7 +36,8 @@ A bird name was chosen.
 # Features
 
 - Only requires [Wireshark](https://www.wireshark.org/)
-- No build required.
+- No build required
+- Parses all Nexxtender specific BLE GATT messages
 
 # Installing 
 Make sure that Wireshark is already installed.
@@ -76,7 +77,7 @@ The following messages are already parsed by `fuut.lua`:
 | NEXXTENDER_GSB     | GENERIC  | STATUS                 | Badge                   |
 | NEXXTENDER_GST     | GENERIC  | STATUS                 | Time                    |
 | NEXXTENDER_GSC     | GENERIC  | STATUS                 | Config                  |
-| NEXXTENDER_GD      | GENERIC  | DATA                   | NA                       |
+| NEXXTENDER_GD      | GENERIC  | DATA                   | NA                      |
 | NEXXTENDER_GDL     | GENERIC  | DATA                   | Loader                  |
 | NEXXTENDER_GDE     | GENERIC  | DATA                   | Event                   |
 | NEXXTENDER_GDM     | GENERIC  | DATA                   | Metric                  |
@@ -91,25 +92,33 @@ The following messages are already parsed by `fuut.lua`:
 | NEXXTENDER_CCDTC   | CCDT     | COMMAND                | NA                      |
 | NEXXTENDER_CCDTS   | CCDT     | STATUS                 | NA                      |
 | NEXXTENDER_CCDTR   | CCDT     | RECORD                 | NA                      |
+| NEXXTENDER_FWC     | FIRMWARE | COMMAND                | NA                      |
+| NEXXTENDER_FWS     | FIRMWARE | STATUS                 | NA                      |
+| NEXXTENDER_FWWC    | FIRMWARE | WANTED_CHUNK           | NA                      |
+| NEXXTENDER_FWDC    | FIRMWARE | DATA_CHUNK             | NA                      |
 
-The following messages are not yet parsed by `fuut.lua`:
-
-| Protocol       | Service  | Characteristic         | Type        |
-| -------------- | ---------| ---------------------- | ----------- |
-| NEXXTENDER_FC  | FIRMWARE | COMMAND                | NA          |
-| NEXXTENDER_FS  | FIRMWARE | STATUS                 | NA          |
-| NEXXTENDER_FW  | FIRMWARE | WANTED_CHUNK           | NA          |
-| NEXXTENDER_FD  | FIRMWARE | DATA_CHUNK             | NA          |
 
 The type of message is shown in the *Protocol* column of the Wireshark Packet List view.
 
 The values parsed by the `fuut.lua` dissector are shown in the Wireshark Packet Details view,
 under the node *Bluetooth Attribute Protocol*, 
-under the subnode that starts with *Nexxtender*.
+under the sub node that starts with *Nexxtender*.
 
 For messages with a CRC, the CRC is verified and flagged as an error when wrong;
 the CRC line will show red and a message is attached stating that the CRC is wrong, 
-inlcuding the correct CRC.
+including the correct CRC.
+
+Only the GATT message direction that carries a GATT characteristic content is shown as being part
+of the *NEXXTENDER_* protocol.
+The other direction is still shown as part of the *ATT* protocol.
+The following diagram shows an example for the *Charging Advanced Data* characteristic:
+
+![Charging Advanced Data Characteristic](docs/images/Screenshot%202025-06-23%20112940.png)
+
+Packet 1526 is the *ATT* read request for the *Charging Advanced Data* characteristic.
+Packet 1528 is the *NEXXTENDER.CAD* read response with the parsed *Charging Advanced Data* in the packet detail window.
+
+![Charging Advanced Data Characteristic detail](docs/images/Screenshot%202025-06-23%20113615.png)
 
 For more information on the Nexxtender BLE protocol, see 
 [Nexxtender Charger Information, Frank HJ Cuypers](https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information).
@@ -178,6 +187,10 @@ For each Nexxtender BLE characteristic, a new Wireshark protocol was defined.
 | NEXXTENDER_CCDTC   | Nexxtender CCDT Command              | nexxtender.ccdtc.\*   |
 | NEXXTENDER_CCDTS   | Nexxtender CCDT Status               | nexxtender.ccdts.\*   |
 | NEXXTENDER_CCDTR   | Nexxtender CCDT Record               | nexxtender.ccdtr.\*   |
+| NEXXTENDER_FWC     | Nexxtender Firmware Command          | nexxtender.fwc.\*     |
+| NEXXTENDER_FWS     | Nexxtender Firmware Status           | nexxtender.fws.\*     |
+| NEXXTENDER_FWWC    | Nexxtender Firmware Wanted Chunck    | nexxtender.fwwc.\*    |
+| NEXXTENDER_FWDC    | Nexxtender Firmware Data Chunck      | nexxtender.fwdc.\*    |
 
 The *Protocol name* is used as display value in the *Protocol* column of the Wireshark *packet list pane*
 (_ws.col.protocol). 

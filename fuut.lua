@@ -85,7 +85,8 @@ do
         [2] = "Charging",
         [3] = "Stopped"
     }
-    local f_cbd_discriminator = ProtoField.uint8("nexxtender.cbd.discriminator", "Discriminator", base.HEX, discriminatorValues)
+    local f_cbd_discriminator =
+        ProtoField.uint8("nexxtender.cbd.discriminator", "Discriminator", base.HEX, discriminatorValues)
     local statusValues = {
         [0x42] = "Plugged",
         [0x43] = "Charging",
@@ -251,7 +252,12 @@ do
         [0x42] = "Authorized ECO"
     }
     local f_cad_authorizationStatus =
-        ProtoField.uint8("nexxtender.cad.authorizationStatus", "AuthorizarionStatus", base.HEX, authorizationStatusValues)
+        ProtoField.uint8(
+        "nexxtender.cad.authorizationStatus",
+        "AuthorizarionStatus",
+        base.HEX,
+        authorizationStatusValues
+    )
     local f_cad_errorCode = ProtoField.uint8("nexxtender.cad.errorCode", "ErrorCode", base.HEX)
     local f_cad_crc16 = ProtoField.uint16("nexxtender.cad.crc16", "crc", base.HEX)
     local f_cad_crcIncorrect =
@@ -372,8 +378,10 @@ do
         [0x06] = "Stop Charging"
     }
 
-    local f_gcl_operationId = ProtoField.uint8("nexxtender.gcl.operationId", "OperationId", base.HEX, loaderOperationValues)
-    local f_gcl_operationType = ProtoField.uint8("nexxtender.gcl.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gcl_operationId =
+        ProtoField.uint8("nexxtender.gcl.operationId", "OperationId", base.HEX, loaderOperationValues)
+    local f_gcl_operationType =
+        ProtoField.uint8("nexxtender.gcl.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gcl.fields = {
         f_gcl_operationId,
@@ -402,8 +410,10 @@ do
         [0x02] = "Update Status"
     }
 
-    local f_gce_operationId = ProtoField.uint8("nexxtender.gce.operationId", "OperationId", base.HEX, eventOperationValues)
-    local f_gce_operationType = ProtoField.uint8("nexxtender.gce.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gce_operationId =
+        ProtoField.uint8("nexxtender.gce.operationId", "OperationId", base.HEX, eventOperationValues)
+    local f_gce_operationType =
+        ProtoField.uint8("nexxtender.gce.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gce.fields = {
         f_gce_operationId,
@@ -432,8 +442,10 @@ do
         [0x02] = "Update Status"
     }
 
-    local f_gcm_operationId = ProtoField.uint8("nexxtender.gcm.operationId", "OperationId", base.HEX, metricsOperationValues)
-    local f_gcm_operationType = ProtoField.uint8("nexxtender.gcm.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gcm_operationId =
+        ProtoField.uint8("nexxtender.gcm.operationId", "OperationId", base.HEX, metricsOperationValues)
+    local f_gcm_operationType =
+        ProtoField.uint8("nexxtender.gcm.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gcm.fields = {
         f_gcm_operationId,
@@ -465,8 +477,10 @@ do
         [0x06] = "List Next"
     }
 
-    local f_gcb_operationId = ProtoField.uint8("nexxtender.gcb.operationId", "OperationId", base.HEX, badgeOperationValues)
-    local f_gcb_operationType = ProtoField.uint8("nexxtender.gcb.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gcb_operationId =
+        ProtoField.uint8("nexxtender.gcb.operationId", "OperationId", base.HEX, badgeOperationValues)
+    local f_gcb_operationType =
+        ProtoField.uint8("nexxtender.gcb.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gcb.fields = {
         f_gcb_operationId,
@@ -495,8 +509,10 @@ do
         [0x02] = "Get"
     }
 
-    local f_gct_operationId = ProtoField.uint8("nexxtender.gct.operationId", "OperationId", base.HEX, timeOperationValues)
-    local f_gct_operationType = ProtoField.uint8("nexxtender.gct.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gct_operationId =
+        ProtoField.uint8("nexxtender.gct.operationId", "OperationId", base.HEX, timeOperationValues)
+    local f_gct_operationType =
+        ProtoField.uint8("nexxtender.gct.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gct.fields = {
         f_gct_operationId,
@@ -527,8 +543,10 @@ do
         [0x04] = "CBOR Get"
     }
 
-    local f_gcc_operationId = ProtoField.uint8("nexxtender.gcc.operationId", "OperationId", base.HEX, configOperationValues)
-    local f_gcc_operationType = ProtoField.uint8("nexxtender.gcc.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gcc_operationId =
+        ProtoField.uint8("nexxtender.gcc.operationId", "OperationId", base.HEX, configOperationValues)
+    local f_gcc_operationType =
+        ProtoField.uint8("nexxtender.gcc.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gcc.fields = {
         f_gcc_operationId,
@@ -592,7 +610,8 @@ do
 
     local f_gsl_operationStatus =
         ProtoField.uint8("nexxtender.gsl.operationStatus", "OperationStatus", base.HEX, loaderStatusValues)
-    local f_gsl_operationType = ProtoField.uint8("nexxtender.gsl.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gsl_operationType =
+        ProtoField.uint8("nexxtender.gsl.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gsl.fields = {
         f_gsl_operationStatus,
@@ -618,7 +637,8 @@ local p_nexxt_gse = Proto("nexxtender.gse", "Nexxtender Generic Status: Event")
 
 do
     local f_gse_remainingEvents = ProtoField.uint8("nexxtender.gse.remainingEvents", "RemainingEvents", base.HEX)
-    local f_gse_operationType = ProtoField.uint8("nexxtender.gse.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gse_operationType =
+        ProtoField.uint8("nexxtender.gse.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gse.fields = {
         f_gse_remainingEvents,
@@ -644,7 +664,8 @@ local p_nexxt_gsm = Proto("nexxtender.gsm", "Nexxtender Generic Status: Metric")
 
 do
     local f_gsm_remainingEvents = ProtoField.uint8("nexxtender.gsm.remainingEvents", "RemainingEvents", base.HEX)
-    local f_gsm_operationType = ProtoField.uint8("nexxtender.gsm.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gsm_operationType =
+        ProtoField.uint8("nexxtender.gsm.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gsm.fields = {
         f_gsm_remainingEvents,
@@ -681,7 +702,8 @@ do
 
     local f_gsb_operationStatus =
         ProtoField.uint8("nexxtender.gsb.operationStatus", "OperationStatus", base.HEX, badgeStatusValues)
-    local f_gsb_operationType = ProtoField.uint8("nexxtender.gsb.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gsb_operationType =
+        ProtoField.uint8("nexxtender.gsb.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gsb.fields = {
         f_gsb_operationStatus,
@@ -711,8 +733,10 @@ do
         [0x03] = "Popped"
     }
 
-    local f_gst_operationStatus = ProtoField.uint8("nexxtender.gst.operationStatus", "OperationStatus", base.HEX, timeStatusValues)
-    local f_gst_operationType = ProtoField.uint8("nexxtender.gst.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gst_operationStatus =
+        ProtoField.uint8("nexxtender.gst.operationStatus", "OperationStatus", base.HEX, timeStatusValues)
+    local f_gst_operationType =
+        ProtoField.uint8("nexxtender.gst.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gst.fields = {
         f_gst_operationStatus,
@@ -747,7 +771,8 @@ do
 
     local f_gsc_operationStatus =
         ProtoField.uint8("nexxtender.gsc.operationStatus", "OperationStatus", base.HEX, configStatusValues)
-    local f_gsc_operationType = ProtoField.uint8("nexxtender.gsc.operationType", "OperationType", base.HEX, genericOperationValues)
+    local f_gsc_operationType =
+        ProtoField.uint8("nexxtender.gsc.operationType", "OperationType", base.HEX, genericOperationValues)
 
     p_nexxt_gsc.fields = {
         f_gsc_operationStatus,
@@ -1002,7 +1027,8 @@ do
         [0x00] = "Mono/Tri+N",
         [0x02] = "Tri"
     }
-    local f_gdc1_1_networkType = ProtoField.uint8("nexxtender.gdc1_1.networkType", "NetworkType", base.HEX, networkTypeValues)
+    local f_gdc1_1_networkType =
+        ProtoField.uint8("nexxtender.gdc1_1.networkType", "NetworkType", base.HEX, networkTypeValues)
 
     local f_gdc1_1_touWeekStart = ProtoField.uint16("nexxtender.gdc1_1.touWeekStart", "TouWeekStart", base.DEC)
     local f_gdc1_1_touWeekEnd = ProtoField.uint16("nexxtender.gdc1_1.touWeekEnd", "TouWeekEnd", base.DEC)
@@ -1068,7 +1094,8 @@ local p_nexxt_gdcCBOR = Proto("nexxtender.gdcCBOR", "Nexxtender Generic Data: Co
 
 do
     local f_gdcCBOR_chargeMode = ProtoField.uint8("nexxtender.gdcCBOR.chargeMode", "Charge Mode", base.HEX, modeValues)
-    local f_gdcCBOR_modbusSlaveAddress = ProtoField.string("nexxtender.gdcCBOR.modbusSlaveAddress", "Modbus Slave Address")
+    local f_gdcCBOR_modbusSlaveAddress =
+        ProtoField.string("nexxtender.gdcCBOR.modbusSlaveAddress", "Modbus Slave Address")
     local f_gdcCBOR_cycleRate = ProtoField.string("nexxtender.gdcCBOR.cycleRate", "Cycle Rate")
     local f_gdcCBOR_iMax = ProtoField.string("nexxtender.gdcCBOR.iMax", "i Max")
     local f_gdcCBOR_iEvseMax = ProtoField.string("nexxtender.gdcCBOR.iEvseMax", "i Evse Max")
@@ -1088,7 +1115,8 @@ do
     local f_gdcCBOR_touWeekendStop = ProtoField.string("nexxtender.gdcCBOR.touWeekendStop", "TouWeekendStop")
     local f_gdcCBOR_timeZone = ProtoField.string("nexxtender.gdcCBOR.timezone", "TimeZone")
     local f_gdcCBOR_relayOffPeriod = ProtoField.string("nexxtender.gdcCBOR.relayOffPeriod", "Relay Off Period")
-    local f_gdcCBOR_externalRegulation = ProtoField.string("nexxtender.gdcCBOR.externalRegulation", "ExternalRegulation")
+    local f_gdcCBOR_externalRegulation =
+        ProtoField.string("nexxtender.gdcCBOR.externalRegulation", "ExternalRegulation")
     local f_gdcCBOR_iCapacity = ProtoField.string("nexxtender.gdcCBOR.iCapacity", "i Capacity")
     local f_gdcCBOR_crc16 = ProtoField.uint16("nexxtender.gdcCBOR.crc16", "crc16", base.HEX)
 
@@ -1374,7 +1402,8 @@ do
     local cdrOperationValues = {
         [0x01] = "Next?"
     }
-    local f_cdrc_operationId = ProtoField.uint8("nexxtender.cdrc.operationId", "OperationId", base.HEX, cdrOperationValues)
+    local f_cdrc_operationId =
+        ProtoField.uint8("nexxtender.cdrc.operationId", "OperationId", base.HEX, cdrOperationValues)
 
     p_nexxt_cdrc.fields = {
         f_cdrc_operationId
@@ -1449,12 +1478,16 @@ local p_nexxt_cdrr = Proto("nexxtender.cdrr", "Nexxtender CDR Record")
 
 do
     local f_cdrr_unknown1 = ProtoField.uint32("nexxtender.cdrr.unknown1", "Unknown1", base.HEX)
-    local f_cdrr_sessionStartTime = ProtoField.absolute_time("nexxtender.cdrr.sessionStartTime", "SessionStartTime", base.LOCAL)
-    local f_cdrr_sessionStartEnergy = ProtoField.uint32("nexxtender.cdrr.sessionStartEnergy", "SessionStartEnergy", base.DEC)
+    local f_cdrr_sessionStartTime =
+        ProtoField.absolute_time("nexxtender.cdrr.sessionStartTime", "SessionStartTime", base.LOCAL)
+    local f_cdrr_sessionStartEnergy =
+        ProtoField.uint32("nexxtender.cdrr.sessionStartEnergy", "SessionStartEnergy", base.DEC)
     local f_cdrr_unknown2 = ProtoField.uint32("nexxtender.cdrr.unknown2", "Unknown2", base.HEX)
     local f_cdrr_unknown3 = ProtoField.uint32("nexxtender.cdrr.unknown3", "Unknown3", base.HEX)
-    local f_cdrr_sessionStopTime = ProtoField.absolute_time("nexxtender.cdrr.sessionStopTime", "SessionStopTime", base.LOCAL)
-    local f_cdrr_sessionStopEnergy = ProtoField.uint32("nexxtender.cdrr.sessionStopEnergy", "SessionStopEnergy", base.DEC)
+    local f_cdrr_sessionStopTime =
+        ProtoField.absolute_time("nexxtender.cdrr.sessionStopTime", "SessionStopTime", base.LOCAL)
+    local f_cdrr_sessionStopEnergy =
+        ProtoField.uint32("nexxtender.cdrr.sessionStopEnergy", "SessionStopEnergy", base.DEC)
     local f_cdrr_unknown4 = ProtoField.uint16("nexxtender.cdrr.unknown4", "Unknown4", base.HEX)
     local f_cdrr_crc16 = ProtoField.uint16("nexxtender.cdrr.crc16", "crc16", base.HEX)
 
@@ -1510,7 +1543,8 @@ do
     local ccdtOperationValues = {
         [0x01] = "Next?"
     }
-    local f_ccdtc_operationId = ProtoField.uint8("nexxtender.ccdtc.operationId", "OperationId", base.HEX, ccdtOperationValues)
+    local f_ccdtc_operationId =
+        ProtoField.uint8("nexxtender.ccdtc.operationId", "OperationId", base.HEX, ccdtOperationValues)
 
     p_nexxt_ccdtc.fields = {
         f_ccdtc_operationId
@@ -1612,6 +1646,116 @@ do
         end
     end
 end
+
+-------------------------------------------------------------------------------
+-- FIRMWARE Command Characteristic
+-------------------------------------------------------------------------------
+local p_nexxt_fwc = Proto("nexxtender.fwc", "Nexxtender Firmware Command")
+do
+    local operationIdName = {
+        [0x02] = "Start",
+        [0x03] = "Stop",
+        [0x04] = "Reset"
+    }
+    local f_fwc_operationId = ProtoField.uint8("nexxtender.fwc.operationId", "Operation Id", base.HEX, operationIdName)
+    local f_fwc_dataLength = ProtoField.uint32("nexxtender.fwc.dataLength", "Data Length", base.DEC)
+    local f_fwc_unknown = ProtoField.bytes("nexxtender.fwc.unknown", "Unknown")
+
+    p_nexxt_fwc.fields = {
+        f_fwc_operationId,
+        f_fwc_dataLength,
+        f_fwc_unknown
+    }
+
+    function p_nexxt_fwc.dissector(buf, pinfo, tree)
+        length = buf:len()
+        if length ~= 8 then
+            return
+        end
+        pinfo.cols.protocol = p_nexxt_fwc.name
+        local subtree = tree:add(p_nexxt_fwc, buf())
+        subtree:add_le(f_fwc_operationId, buf(0, 1))
+        subtree:add_le(f_fwc_dataLength, buf(1, 4))
+        subtree:add_le(f_fwc_unknown, buf(5, 3))
+    end
+end
+
+-------------------------------------------------------------------------------
+-- FIRMWARE Status Characteristic
+-------------------------------------------------------------------------------
+local p_nexxt_fws = Proto("nexxtender.fws", "Nexxtender Firmware Status")
+do
+    local statusName = {
+        [0x00] = "BUSY",
+        [0x10] = "IDLE",
+        [0x11] = "CRC",
+        [0x12] = "NEXT",
+        [0x14] = "FINISHED"
+    }
+    local f_fws_status = ProtoField.uint8("nexxtender.fws.status", "Status", base.HEX, statusName)
+    local f_fws_errorCode = ProtoField.uint8("nexxtender.fws.errorcode", "Error Code", base.HEX)
+    local f_fws_unknown = ProtoField.bytes("nexxtender.fws.unknown", "Unknown")
+
+    p_nexxt_fws.fields = {
+        f_fws_status,
+        f_fws_errorCode,
+        f_fws_unknown
+    }
+
+    function p_nexxt_fws.dissector(buf, pinfo, tree)
+        length = buf:len()
+        if length ~= 8 then
+            return
+        end
+        pinfo.cols.protocol = p_nexxt_fws.name
+        local subtree = tree:add(p_nexxt_fws, buf())
+        subtree:add_le(f_fws_status, buf(0, 1))
+        subtree:add_le(f_fws_errorCode, buf(1, 1))
+        subtree:add_le(f_fws_unknown, buf(2, 6))
+    end
+end
+
+-------------------------------------------------------------------------------
+-- FIRMWARE Wanted Chunk Characteristic
+-------------------------------------------------------------------------------
+local p_nexxt_fwwc = Proto("nexxtender.fwwc", "Nexxtender Wanted Chunck")
+do
+    local f_fwwc_chunckNumber = ProtoField.uint16("nexxtender.fwwc.chuncknumber", "Chunck Number", base.DEC)
+
+    p_nexxt_fwwc.fields = {
+        f_fwwc_chunckNumber
+    }
+
+    function p_nexxt_fwwc.dissector(buf, pinfo, tree)
+        length = buf:len()
+        if length ~= 2 then
+            return
+        end
+        pinfo.cols.protocol = p_nexxt_fwwc.name
+        local subtree = tree:add(p_nexxt_fwwc, buf())
+        subtree:add_le(f_fwwc_chunckNumber, buf(0, 2))
+    end
+end
+
+-------------------------------------------------------------------------------
+-- FIRMWARE Data Chunk Characteristic
+-------------------------------------------------------------------------------
+local p_nexxt_fwdc = Proto("nexxtender.fwdc", "Nexxtender Data Chunck")
+do
+    local f_fwdc_chunck = ProtoField.bytes("nexxtender.fwdc.chunck", "Chunck Data")
+
+    p_nexxt_fwdc.fields = {
+        f_fwdc_chunck
+    }
+
+    function p_nexxt_fwdc.dissector(buf, pinfo, tree)
+        length = buf:len()
+        pinfo.cols.protocol = p_nexxt_fwdc.name
+        local subtree = tree:add(p_nexxt_fwdc, buf())
+        subtree:add_le(f_fwdc_chunck, buf())
+    end
+end
+
 -------------------------------------------------------------------------------
 -- Registering all dissectors
 -------------------------------------------------------------------------------
@@ -1632,6 +1776,10 @@ do
     local UUID_NEXXTENDER_CCDT_COMMAND_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c6"
     local UUID_NEXXTENDER_CCDT_STATUS_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c7"
     local UUID_NEXXTENDER_CCDT_RECORD_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "c8"
+    local UUID_NEXXTENDER_FIRMWARE_COMMAND_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "ca"
+    local UUID_NEXXTENDER_FIRMWARE_STATUS_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "cb"
+    local UUID_NEXXTENDER_FIRMWARE_WANTED_CHUNK_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "cc"
+    local UUID_NEXXTENDER_FIRMWARE_DATA_CHUNK_CHARACTERISTIC = UUID_NEXXTENDER_BASE .. "cd"
 
     local p_nexxt = Proto("nexxt", "Nexxtender BLE GATT")
 
@@ -1651,4 +1799,8 @@ do
     bt_dissector:add(UUID_NEXXTENDER_CCDT_COMMAND_CHARACTERISTIC, p_nexxt_ccdtc)
     bt_dissector:add(UUID_NEXXTENDER_CCDT_STATUS_CHARACTERISTIC, p_nexxt_ccdts)
     bt_dissector:add(UUID_NEXXTENDER_CCDT_RECORD_CHARACTERISTIC, p_nexxt_ccdtr)
+    bt_dissector:add(UUID_NEXXTENDER_FIRMWARE_COMMAND_CHARACTERISTIC, p_nexxt_fwc)
+    bt_dissector:add(UUID_NEXXTENDER_FIRMWARE_STATUS_CHARACTERISTIC, p_nexxt_fws)
+    bt_dissector:add(UUID_NEXXTENDER_FIRMWARE_WANTED_CHUNK_CHARACTERISTIC, p_nexxt_fwwc)
+    bt_dissector:add(UUID_NEXXTENDER_FIRMWARE_DATA_CHUNK_CHARACTERISTIC, p_nexxt_fwdc)
 end
