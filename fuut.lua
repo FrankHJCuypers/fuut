@@ -591,6 +591,7 @@ do
         local dissector = gcDissectors[operationType]
 
         if dissector ~= nil then
+            pinfo.cols.info:append(" [" .. genericOperationValues[operationType] .. "]")
             dissector:call(buf, pinfo, tree)
         end
     end
@@ -817,6 +818,7 @@ do
         local dissector = gsDissectors[operationType]
 
         if dissector ~= nil then
+            pinfo.cols.info:append(" [" .. genericOperationValues[operationType] .. "]")
             dissector:call(buf, pinfo, tree)
         end
     end
@@ -1388,6 +1390,7 @@ do
         local dissector = gdDissectors[lastOperationType]
 
         if dissector ~= nil then
+            pinfo.cols.info:append(" [" .. genericOperationValues[operationType] .. "]")
             dissector:call(buf, pinfo, tree)
         end
     end
