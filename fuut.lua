@@ -254,7 +254,7 @@ do
     local f_cad_authorizationStatus =
         ProtoField.uint8(
         "nexxtender.cad.authorizationStatus",
-        "AuthorizarionStatus",
+        "AuthorizationStatus",
         base.HEX,
         authorizationStatusValues
     )
