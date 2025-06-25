@@ -55,48 +55,50 @@ It is also recommended to configure The BLE names and characteristics as explain
 The `fuut.lua` dissector parses all Wireshark BT ATT messages that are linked to the Nexxtender charger
 and adds the parsed result to the Wireshark Packet Details view.
 
-The following messages are already parsed by `fuut.lua`:
+The following messages are parsed by `fuut.lua`:
 
 | Protocol           | Service  | Characteristic         | Type                    |
 | ------------------ | -------- | ---------------------- | ----------------------- |
-| NEXXTENDER_CBD     | CHARGING | CHARGING_BASIC_DATA    | NA                      |
-| NEXXTENDER_CGD     | CHARGING | CHARGING_GRID_DATA     | NA                      |
-| NEXXTENDER_CCD     | CHARGING | CHARGING_CAR_DATA      | NA                      |
-| NEXXTENDER_CAD     | CHARGING | CHARGING_ADVANCED_DATA | NA                      |
-| NEXXTENDER_GC      | GENERIC  | COMMAND                | NA                      |
-| NEXXTENDER_GCL     | GENERIC  | COMMAND                | Loader                  |
-| NEXXTENDER_GCE     | GENERIC  | COMMAND                | Event                   |
-| NEXXTENDER_GCM     | GENERIC  | COMMAND                | Metric                  |
-| NEXXTENDER_GCB     | GENERIC  | COMMAND                | Badge                   |
-| NEXXTENDER_GCT     | GENERIC  | COMMAND                | Time                    |
-| NEXXTENDER_GCC     | GENERIC  | COMMAND                | Config                  |
-| NEXXTENDER_GS      | GENERIC  | STATUS                 | NA                      |
-| NEXXTENDER_GSL     | GENERIC  | STATUS                 | Loader                  |
-| NEXXTENDER_GSE     | GENERIC  | STATUS                 | Event                   |
-| NEXXTENDER_GSM     | GENERIC  | STATUS                 | Metric                  |
-| NEXXTENDER_GSB     | GENERIC  | STATUS                 | Badge                   |
-| NEXXTENDER_GST     | GENERIC  | STATUS                 | Time                    |
-| NEXXTENDER_GSC     | GENERIC  | STATUS                 | Config                  |
-| NEXXTENDER_GD      | GENERIC  | DATA                   | NA                      |
-| NEXXTENDER_GDL     | GENERIC  | DATA                   | Loader                  |
-| NEXXTENDER_GDE     | GENERIC  | DATA                   | Event                   |
-| NEXXTENDER_GDM     | GENERIC  | DATA                   | Metric                  |
-| NEXXTENDER_GDB     | GENERIC  | DATA                   | Badge                   |
-| NEXXTENDER_GDT     | GENERIC  | DATA                   | Time                    |
-| NEXXTENDER_GDC1_0  | GENERIC  | DATA                   | Config                  |
-| NEXXTENDER_GDC1_1  | GENERIC  | DATA                   | Config                  |
-| NEXXTENDER_GDCCBOR | GENERIC  | DATA                   | Config                  |
-| NEXXTENDER_CDRC    | CDR      | COMMAND                | NA                      |
-| NEXXTENDER_CDRS    | CDR      | STATUS                 | NA                      |
-| NEXXTENDER_CDRR    | CDR      | RECORD                 | NA                      |
-| NEXXTENDER_CCDTC   | CCDT     | COMMAND                | NA                      |
-| NEXXTENDER_CCDTS   | CCDT     | STATUS                 | NA                      |
-| NEXXTENDER_CCDTR   | CCDT     | RECORD                 | NA                      |
-| NEXXTENDER_FWC     | FIRMWARE | COMMAND                | NA                      |
-| NEXXTENDER_FWS     | FIRMWARE | STATUS                 | NA                      |
-| NEXXTENDER_FWWC    | FIRMWARE | WANTED_CHUNK           | NA                      |
-| NEXXTENDER_FWDC    | FIRMWARE | DATA_CHUNK             | NA                      |
+| NEXXTENDER_CBD     | Charging | Charging Basic Data    | NA                      |
+| NEXXTENDER_CGD     | Charging | Charging Grid Data     | NA                      |
+| NEXXTENDER_CCD     | Charging | Charging Car Data      | NA                      |
+| NEXXTENDER_CAD     | Charging | Charging Advanced Data | NA                      |
+| NEXXTENDER_GC      | Generic  | Command                | NA                      |
+| NEXXTENDER_GCL     | Generic  | Command                | Loader                  |
+| NEXXTENDER_GCE     | Generic  | Command                | Event                   |
+| NEXXTENDER_GCM     | Generic  | Command                | Metric                  |
+| NEXXTENDER_GCB     | Generic  | Command                | Badge                   |
+| NEXXTENDER_GCT     | Generic  | Command                | Time                    |
+| NEXXTENDER_GCC     | Generic  | Command                | Config                  |
+| NEXXTENDER_GS      | Generic  | Status                 | NA                      |
+| NEXXTENDER_GSL     | Generic  | Status                 | Loader                  |
+| NEXXTENDER_GSE     | Generic  | Status                 | Event                   |
+| NEXXTENDER_GSM     | Generic  | Status                 | Metric                  |
+| NEXXTENDER_GSB     | Generic  | Status                 | Badge                   |
+| NEXXTENDER_GST     | Generic  | Status                 | Time                    |
+| NEXXTENDER_GSC     | Generic  | Status                 | Config                  |
+| NEXXTENDER_GD      | Generic  | Data                   | NA                      |
+| NEXXTENDER_GDL     | Generic  | Data                   | Loader                  |
+| NEXXTENDER_GDE     | Generic  | Data                   | Event                   |
+| NEXXTENDER_GDM     | Generic  | Data                   | Metric                  |
+| NEXXTENDER_GDB     | Generic  | Data                   | Badge                   |
+| NEXXTENDER_GDT     | Generic  | Data                   | Time                    |
+| NEXXTENDER_GDC1_0  | Generic  | Data                   | Config                  |
+| NEXXTENDER_GDC1_1  | Generic  | Data                   | Config                  |
+| NEXXTENDER_GDCCBOR | Generic  | Data                   | Config                  |
+| NEXXTENDER_CDRC    | CDR      | Command                | NA                      |
+| NEXXTENDER_CDRS    | CDR      | Status                 | NA                      |
+| NEXXTENDER_CDRR    | CDR      | Record                 | NA                      |
+| NEXXTENDER_CCDTC   | CCDT     | Command                | NA                      |
+| NEXXTENDER_CCDTS   | CCDT     | Status                 | NA                      |
+| NEXXTENDER_CCDTR   | CCDT     | Record                 | NA                      |
+| NEXXTENDER_FWC     | Firmware | Command                | NA                      |
+| NEXXTENDER_FWS     | Firmware | Status                 | NA                      |
+| NEXXTENDER_FWWC    | Firmware | Wanted Chunk           | NA                      |
+| NEXXTENDER_FWDC    | Firmware | Data Chunk             | NA                      |
 
+The *Nexxtender Mobile* chargers use the Services as indicated in this table.
+But the *Nexxtender Home* charger sends all these characteristics under the Generic (C1) service!
 
 The type of message is shown in the *Protocol* column of the Wireshark Packet List view.
 
@@ -113,12 +115,12 @@ of the *NEXXTENDER_* protocol.
 The other direction is still shown as part of the *ATT* protocol.
 The following diagram shows an example for the *Charging Advanced Data* characteristic:
 
-![Charging Advanced Data Characteristic](docs/images/Screenshot%202025-06-23%20112940.png)
+![Charging Advanced Data Characteristic](docs/images/Screenshot%202025-06-25%20184448.png)
 
 Packet 1526 is the *ATT* read request for the *Charging Advanced Data* characteristic.
 Packet 1528 is the *NEXXTENDER.CAD* read response with the parsed *Charging Advanced Data* in the packet detail window.
 
-![Charging Advanced Data Characteristic detail](docs/images/Screenshot%202025-06-23%20113615.png)
+![Charging Advanced Data Characteristic detail](docs/images/Screenshot%202025-06-25%20184637.png)
 
 For more information on the Nexxtender BLE protocol, see 
 [Nexxtender Charger Information, Frank HJ Cuypers](https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information).
@@ -151,46 +153,46 @@ Those relevant in the Nexxtender protocol stack are listed in the following tabl
 The NEXXTENDER_\* level consists of the following "sub" protocols.
 For each Nexxtender BLE characteristic, a new Wireshark protocol was defined.
 
-| Protocol name      | Protocol description                 | Field filter names    |
-| -------------------| ------------------------------------ | --------------------- |
-| NEXXTENDER_CBD     | Nexxtender Charging Basic Data       | nexxtender.cbd.\*     |
-| NEXXTENDER_CGD     | Nexxtender Charging Grid Data        | nexxtender.cgd.\*     |
-| NEXXTENDER_CCD     | Nexxtender Charging Car Data         | nexxtender.ccd.\*     |
-| NEXXTENDER_CAD     | Nexxtender Charging Advanced Data    | nexxtender.cad.\*     |
-| NEXXTENDER_GC      | Nexxtender Generic Command           | NA                    |
-| NEXXTENDER_GCL     | Nexxtender Generic Command: Loader   | nexxtender.gcl.\*     |
-| NEXXTENDER_GCE     | Nexxtender Generic Command: Event    | nexxtender.gce.\*     |
-| NEXXTENDER GCM     | Nexxtender Generic Command: Metrics  | nexxtender.gcm.\*     |
-| NEXXTENDER_GCB     | Nexxtender Generic Command: Badge    | nexxtender.gcb.\*     |
-| NEXXTENDER_GCT     | Nexxtender Generic Command: Time     | nexxtender.gct.\*     |
-| NEXXTENDER_GCC     | Nexxtender Generic Command: Config   | nexxtender.gcc.\*     |
-| NEXXTENDER_GS      | Nexxtender Generic Status            | nexxtender.NA         |
-| NEXXTENDER_GSL     | Nexxtender Generic Status: Loader    | nexxtender.gsl.\*     |
-| NEXXTENDER_GSE     | Nexxtender Generic Status: Event     | nexxtender.gse.\*     |
-| NEXXTENDER_GSM     | Nexxtender Generic Status: Metrics   | nexxtender.gsm.\*     |
-| NEXXTENDER_GSB     | Nexxtender Generic Status: Badge     | nexxtender.gsb.\*     |
-| NEXXTENDER_GST     | Nexxtender Generic Status: Time      | nexxtender.gst.\*     |
-| NEXXTENDER_GSC     | Nexxtender Generic Status: Config    | nexxtender.gsc.\*     |
-| NEXXTENDER_GD      | Nexxtender Generic Data              | NA                    |
-| NEXXTENDER_GDL     | Nexxtender Generic Data: Loader      | nexxtender.gdl.\*     |
-| NEXXTENDER_GDE     | Nexxtender Generic Data: Event       | nexxtender.gde.\*     |
-| NEXXTENDER_GDM     | Nexxtender Generic Data: Metrics     | nexxtender.gdm.\*     |
-| NEXXTENDER_GDB     | Nexxtender Generic Data: Badge       | nexxtender.gdb.\*     |
-| NEXXTENDER_GDT     | Nexxtender Generic Data: Time        | nexxtender.gdt.\*     |
-| NEXXTENDER_GDC     | Nexxtender Generic Data: Config      | NA                    |
-| NEXXTENDER_GDC1_0  | Nexxtender Generic Data: Config 1.0  | nexxtender.gdc1_0.\*  |
-| NEXXTENDER_GDC1_1  | Nexxtender Generic Data: Config 1.1  | nexxtender.gdc1.1.\*  |
-| NEXXTENDER_GDCCBOR | Nexxtender Generic Data: Config CBOR | nexxtender.gdcCBOR.\* |
-| NEXXTENDER_CDRC    | Nexxtender CDR Command               | nexxtender.cdrc.\*    |
-| NEXXTENDER_CDRS    | Nexxtender CDR Status                | nexxtender.cdrs.\*    |
-| NEXXTENDER_CDRR    | Nexxtender CDR Record                | nexxtender.cdrr.\*    |
-| NEXXTENDER_CCDTC   | Nexxtender CCDT Command              | nexxtender.ccdtc.\*   |
-| NEXXTENDER_CCDTS   | Nexxtender CCDT Status               | nexxtender.ccdts.\*   |
-| NEXXTENDER_CCDTR   | Nexxtender CCDT Record               | nexxtender.ccdtr.\*   |
-| NEXXTENDER_FWC     | Nexxtender Firmware Command          | nexxtender.fwc.\*     |
-| NEXXTENDER_FWS     | Nexxtender Firmware Status           | nexxtender.fws.\*     |
-| NEXXTENDER_FWWC    | Nexxtender Firmware Wanted Chunck    | nexxtender.fwwc.\*    |
-| NEXXTENDER_FWDC    | Nexxtender Firmware Data Chunck      | nexxtender.fwdc.\*    |
+| Protocol name      | Protocol description                    | Field filter names    |
+| -------------------| --------------------------------------- | --------------------- |
+| NEXXTENDER_CBD     | Nexxtender Charging Basic Data          | nexxtender.cbd.\*     |
+| NEXXTENDER_CGD     | Nexxtender Charging Grid Data           | nexxtender.cgd.\*     |
+| NEXXTENDER_CCD     | Nexxtender Charging Car Data            | nexxtender.ccd.\*     |
+| NEXXTENDER_CAD     | Nexxtender Charging Advanced Data       | nexxtender.cad.\*     |
+| NEXXTENDER_GC      | Nexxtender Generic Command              | NA                    |
+| NEXXTENDER_GCL     | Nexxtender Generic Command \[Loader\]   | nexxtender.gcl.\*     |
+| NEXXTENDER_GCE     | Nexxtender Generic Command \[Event\]    | nexxtender.gce.\*     |
+| NEXXTENDER GCM     | Nexxtender Generic Command \[Metrics\]  | nexxtender.gcm.\*     |
+| NEXXTENDER_GCB     | Nexxtender Generic Command \[Badge\]    | nexxtender.gcb.\*     |
+| NEXXTENDER_GCT     | Nexxtender Generic Command \[Time\]     | nexxtender.gct.\*     |
+| NEXXTENDER_GCC     | Nexxtender Generic Command \[Config\]   | nexxtender.gcc.\*     |
+| NEXXTENDER_GS      | Nexxtender Generic Status               | nexxtender.NA         |
+| NEXXTENDER_GSL     | Nexxtender Generic Status \[Loader\]    | nexxtender.gsl.\*     |
+| NEXXTENDER_GSE     | Nexxtender Generic Status \[Event\]     | nexxtender.gse.\*     |
+| NEXXTENDER_GSM     | Nexxtender Generic Status \[Metrics\]   | nexxtender.gsm.\*     |
+| NEXXTENDER_GSB     | Nexxtender Generic Status \[Badge\]     | nexxtender.gsb.\*     |
+| NEXXTENDER_GST     | Nexxtender Generic Status \[Time\]      | nexxtender.gst.\*     |
+| NEXXTENDER_GSC     | Nexxtender Generic Status \[Config\]    | nexxtender.gsc.\*     |
+| NEXXTENDER_GD      | Nexxtender Generic Data                 | NA                    |
+| NEXXTENDER_GDL     | Nexxtender Generic Data \[Loader\]      | nexxtender.gdl.\*     |
+| NEXXTENDER_GDE     | Nexxtender Generic Data \[Event\]       | nexxtender.gde.\*     |
+| NEXXTENDER_GDM     | Nexxtender Generic Data \[Metrics\]     | nexxtender.gdm.\*     |
+| NEXXTENDER_GDB     | Nexxtender Generic Data \[Badge\]       | nexxtender.gdb.\*     |
+| NEXXTENDER_GDT     | Nexxtender Generic Data \[Time\]        | nexxtender.gdt.\*     |
+| NEXXTENDER_GDC     | Nexxtender Generic Data \[Config\]      | NA                    |
+| NEXXTENDER_GDC1_0  | Nexxtender Generic Data \[Config 1.0\]  | nexxtender.gdc1_0.\*  |
+| NEXXTENDER_GDC1_1  | Nexxtender Generic Data \[Config 1.1\]  | nexxtender.gdc1.1.\*  |
+| NEXXTENDER_GDCCBOR | Nexxtender Generic Data \[Config CBOR\] | nexxtender.gdcCBOR.\* |
+| NEXXTENDER_CDRC    | Nexxtender CDR Command                  | nexxtender.cdrc.\*    |
+| NEXXTENDER_CDRS    | Nexxtender CDR Status                   | nexxtender.cdrs.\*    |
+| NEXXTENDER_CDRR    | Nexxtender CDR Record                   | nexxtender.cdrr.\*    |
+| NEXXTENDER_CCDTC   | Nexxtender CCDT Command                 | nexxtender.ccdtc.\*   |
+| NEXXTENDER_CCDTS   | Nexxtender CCDT Status                  | nexxtender.ccdts.\*   |
+| NEXXTENDER_CCDTR   | Nexxtender CCDT Record                  | nexxtender.ccdtr.\*   |
+| NEXXTENDER_FWC     | Nexxtender Firmware Command             | nexxtender.fwc.\*     |
+| NEXXTENDER_FWS     | Nexxtender Firmware Status              | nexxtender.fws.\*     |
+| NEXXTENDER_FWWC    | Nexxtender Firmware Wanted Chunck       | nexxtender.fwwc.\*    |
+| NEXXTENDER_FWDC    | Nexxtender Firmware Data Chunck         | nexxtender.fwdc.\*    |
 
 The *Protocol name* is used as display value in the *Protocol* column of the Wireshark *packet list pane*
 (_ws.col.protocol). 
