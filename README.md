@@ -21,10 +21,10 @@
 The goal of this dissector is to dissect the Nexxtender specific BLE GATT messages that are exchanged
 between the Nexxtmove app and the Nexxtender chargers,
 according to 
-[Nexxtender Charger Information](https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information).
-It was developed based on the [Gaai app project](https://frankhjcuypers.github.io/Gaai/).
+[Nexxtender Charger Information](https://github.com/FrankHJCuypers/gaai/wiki/Nexxtender-Charger-Information).
+It was developed based on the [Gaai app project](https://frankhjcuypers.github.io/gaai/).
 
-For more information see [Analyzing Bluetooth Low Energy Traffic](https://github.com/FrankHJCuypers/Gaai/wiki/Analyzing-Bluetooth-Low-Energy-Traffic).
+For more information see [Analyzing Bluetooth Low Energy Traffic](https://github.com/FrankHJCuypers/gaai/wiki/Analyzing-Bluetooth-Low-Energy-Traffic).
 
 ## Fuut?
 
@@ -48,7 +48,7 @@ I use the *Personal Lua Plugins* directory that expands to
 `C:\Users\Frank\AppData\Roaming\Wireshark\plugins` on my PC.
 
 It is also recommended to configure The BLE names and characteristics as explained in 
-[Wireshark: add Nexxtender Home BLE UUIDs](https://github.com/FrankHJCuypers/Gaai/wiki/Analyzing-Bluetooth-Low-Energy-Traffic#add-nexxtender-home-ble-uuids).
+[Wireshark: add Nexxtender Home BLE UUIDs](https://github.com/FrankHJCuypers/gaai/wiki/Analyzing-Bluetooth-Low-Energy-Traffic#add-nexxtender-home-ble-uuids).
 
 # Usage
 
@@ -123,7 +123,7 @@ Packet 1528 is the *NEXXTENDER.CAD* read response with the parsed *Charging Adva
 ![Charging Advanced Data Characteristic detail](docs/images/Screenshot%202025-06-25%20184637.png)
 
 For more information on the Nexxtender BLE protocol, see 
-[Nexxtender Charger Information, Frank HJ Cuypers](https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information).
+[Nexxtender Charger Information, Frank HJ Cuypers](https://github.com/FrankHJCuypers/gaai/wiki/Nexxtender-Charger-Information).
 The `fuut.lua` dissector uses the names and values from that document.
 
 ## Wireshark display filters
@@ -214,12 +214,12 @@ It adds dissectors to the *bluetooth.uid* table defined in *proto_reg_handoff_bt
 
 Useful information can be found at
 
-- [Nexxtender Charger Information, Frank HJ Cuypers](https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information)
-- [Analyzing Bluetooth Low Energy Traffic](https://github.com/FrankHJCuypers/Gaai/wiki/Analyzing-Bluetooth-Low-Energy-Traffic)
+- [Nexxtender Charger Information, Frank HJ Cuypers](https://github.com/FrankHJCuypers/gaai/wiki/Nexxtender-Charger-Information)
+- [Analyzing Bluetooth Low Energy Traffic](https://github.com/FrankHJCuypers/gaai/wiki/Analyzing-Bluetooth-Low-Energy-Traffic)
 - [Wireshark](https://www.wireshark.org/)
 - [Creating a Wireshark dissector in Lua](https://mika-s.github.io/wireshark/lua/dissector/2017/11/04/creating-a-wireshark-dissector-in-lua-1.html)
-- [Gaai app project](https://frankhjcuypers.github.io/Gaai/)
-- [Gaai app github](https://github.com/FrankHJCuypers/Gaai)
+- [Gaai app project](https://frankhjcuypers.github.io/gaai/)
+- [Gaai app github](https://github.com/FrankHJCuypers/gaai)
 # License
 
 This project is licensed under the GNU AGPLv3 License. See the [LICENSE](LICENSE) file for details.

@@ -16,7 +16,7 @@ If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 -- Lua Wireshark Dissector for Nexxtender charger BLE
 -------------------------------------------------------------------------------
--- See https://github.com/FrankHJCuypers/Gaai/wiki/Nexxtender-Charger-Information
+-- See https://github.com/FrankHJCuypers/gaai/wiki/Nexxtender-Charger-Information
 -------------------------------------------------------------------------------
 -- Nexxtender charger profile
 -------------------------------------------------------------------------------
