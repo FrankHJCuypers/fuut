@@ -63,3 +63,9 @@ The two packets are out of place, so the *Bluetooth HCI ACL Packet* layer will f
 *Frame is out of any "connection handle" session* error.
 That doesn't prohibit the dissector to be called.
 
+## hci_snoop20250703175838.cfa
+Contains 1 charging session, started with a badge.
+It shows that:
++ The badge UID does not appear in the CRD record.
++ The badge UID does not appear in a CCDT record.
++ The badge UID only appears in a Generic\[event\] record of type 1 1 2
