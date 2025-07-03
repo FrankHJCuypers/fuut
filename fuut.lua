@@ -1598,7 +1598,7 @@ do
         [0x42] = "Charge started",
         [0x49] = "Charge stopped",
         [0x4A] = "Charging",
-        [0x60] = " CDR stopped"
+        [0x60] = "CDR stopped"
     }
     local f_ccdtr_ccdtType = ProtoField.uint8("nexxtender.ccdtr.ccdtType", "CCDT type", base.HEX, ccdtTypeValues)
     local f_ccdtr_l1 = ProtoField.uint32("nexxtender.ccdtr.l1", "L1", base.dec)
