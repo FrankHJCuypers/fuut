@@ -1386,8 +1386,8 @@ do
     function p_nexxt_gd.dissector(buf, pinfo, tree)
         length = buf:len()
         pinfo.cols.protocol = p_nexxt_gd.name
-        local lastOperationType = GetLastOperationType(pinfo.number)
-        local dissector = gdDissectors[lastOperationType]
+        local operationType = GetLastOperationType(pinfo.number)
+        local dissector = gdDissectors[operationType]
 
         if dissector ~= nil then
             pinfo.cols.info:append(" [" .. genericOperationValues[operationType] .. "]")
