@@ -1027,7 +1027,7 @@ do
     local f_gdc1_1_safe = ProtoField.uint8("nexxtender.gdc1_1.safe", "Safe", base.DEC)
     local networkTypeValues = {
         [0x00] = "Mono/Tri+N",
-        [0x02] = "Tri"
+        [0x03] = "Tri"
     }
     local f_gdc1_1_networkType =
         ProtoField.uint8("nexxtender.gdc1_1.networkType", "NetworkType", base.HEX, networkTypeValues)
@@ -1106,7 +1106,7 @@ do
     local f_gdcCBOR_solarMode = ProtoField.string("nexxtender.gdcCBOR.solarMode", "Solar Mode")
     local phaseSeqValues = {
         [0x00] = "Mono/Tri+N",
-        [0x01] = "Tri"
+        [0x03] = "Tri"
     }
     local f_gdcCBOR_phaseSeq = ProtoField.uint8("nexxtender.gdcCBOR.phaseSeq", "Phase Seq", base.DEC, phaseSeqValues)
     local f_gdcCBOR_chargingPhases = ProtoField.string("nexxtender.gdcCBOR.chargingPhases", "Charging Phases")
