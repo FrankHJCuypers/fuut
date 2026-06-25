@@ -1,6 +1,6 @@
 --[[
 Project Gaai: one app to control the Nexxtender chargers.
-Copyright © 2025, Frank HJ Cuypers
+Copyright © 2025-2026, Frank HJ Cuypers
 
 This program is free software: you can redistribute it and/or modify it under the terms of the
 GNU Affero General Public License as published by the Free Software Foundation,
@@ -95,7 +95,7 @@ do
         [0x46] = "Fault"
     }
     local f_cbd_status = ProtoField.uint8("nexxtender.cbd.status", "Status", base.HEX, statusValues)
-    local f_cbd_rfu1 = ProtoField.uint32("nexxtender.cbd.rfu1", "Rfu1", base.HEX)
+    local f_cbd_rfu1CarPower = ProtoField.uint32("nexxtender.cbd.rfu1CarPower", "RFU1/CarPower", base.DEC)
     local f_cbd_energy = ProtoField.uint32("nexxtender.cbd.enery", "Energy", base.DEC)
     local f_cbd_rfu2 = ProtoField.uint8("nexxtender.cbd.rfu2", "Rfu2", base.HEX)
     local f_cbd_phasecount = ProtoField.uint8("nexxtender.cbd.phasecount", "Phasecount", base.DEC)
@@ -104,7 +104,7 @@ do
         f_cbd_seconds,
         f_cbd_discriminator,
         f_cbd_status,
-        f_cbd_rfu1,
+        f_cbd_rfu1CarPower,
         f_cbd_energy,
         f_cbd_rfu2,
         f_cbd_phasecount
@@ -120,7 +120,7 @@ do
         subtree:add_packet_field(f_cbd_seconds, buf(0, 2), ENC_LITTLE_ENDIAN, "s")
         subtree:add_le(f_cbd_discriminator, buf(2, 1))
         subtree:add_le(f_cbd_status, buf(3, 1))
-        subtree:add_le(f_cbd_rfu1, buf(4, 4))
+        subtree:add_packet_field(f_cbd_rfu1CarPower, buf(4, 4), ENC_LITTLE_ENDIAN, "W")
         subtree:add_packet_field(f_cbd_energy, buf(8, 4), ENC_LITTLE_ENDIAN, "Wh")
         subtree:add_le(f_cbd_rfu2, buf(12, 1))
         subtree:add_le(f_cbd_phasecount, buf(13, 1))
