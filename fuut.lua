@@ -896,10 +896,10 @@ do
 
     function p_nexxt_gdm.dissector(buf, pinfo, tree)
         length = buf:len()
-        if length ~= 20 then
+        if length ~= 44 then
             return
         end
-        pinfo.cols.protocol = p_nexxt_gmdm.name
+        pinfo.cols.protocol = p_nexxt_gdm.name
         local subtree = tree:add(p_nexxt_gdm, buf())
         subtree:add_le(f_gdm_unknown, buf())
     end
