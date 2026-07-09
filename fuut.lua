@@ -1806,4 +1806,13 @@ do
     bt_dissector:add(UUID_NEXXTENDER_FIRMWARE_STATUS_CHARACTERISTIC, p_nexxt_fws)
     bt_dissector:add(UUID_NEXXTENDER_FIRMWARE_WANTED_CHUNK_CHARACTERISTIC, p_nexxt_fwwc)
     bt_dissector:add(UUID_NEXXTENDER_FIRMWARE_DATA_CHUNK_CHARACTERISTIC, p_nexxt_fwdc)
+
+    -- Standalone CDR, CCDT, EVENT, METRIC records
+    local wtap_encap_table = DissectorTable.get("wtap_encap")
+    wtap_encap_table:add(wtap.USER0, p_nexxt_cdrr)
+    wtap_encap_table:add(wtap.USER1, p_nexxt_ccdtr)
+    wtap_encap_table:add(wtap.USER2, p_nexxt_gde)
+    wtap_encap_table:add(wtap.USER3, p_nexxt_gdm)
+
 end
+

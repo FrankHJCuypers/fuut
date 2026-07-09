@@ -209,6 +209,50 @@ the protocol name and fields must be in lower case, like in `nexxtender.ccdtr`.
 It adds dissectors to the *bluetooth.uid* table defined in *proto_reg_handoff_btgatt()*.
 
 
+# Analyzing record files from Gaai
+
+This Wireshark dissector is primarily meant to be used on the protocol exchanged between Mobile phone and Nexxtender charger,
+obtained by some form of sniffing. 
+
+When Gaai downloads CDR, CCDT, Event or Metric records from the Nexxtender charger,
+it writes the loaded records in text files located on /data/data/be.cuypers_ghys.gaai/files/DownloadedRecords.
+These files can be accessed in Android Studio's Device Explorer.
+This Wireshark dissector can also dissect the contents of these files.
+The naming of these files is
+`<device serial number>_<type>_<timestamp>.txt` with
+
+- `<device serial number>` the serial number (SN) of the Nexxtender charger.
+- `<type>` the record types stored in the file: CDR, CCDT, EVENT or METRIC.
+- `<timestamp>` indicating when the file was created by Gaai.
+
+## Preparing Wireshark 
+
+In order for Wireshark to be able to dissect this correctly, some preferences must be changed.
+In Wireshark, go to Edit->Preferences->Protocols->DLT_USER->Edit.
+Use the '+' to add the following 4 entries to the table
+
+| DLT              | Payload dissector | Header  size | Header dissector | Trailer size | Trailer dissector |
+| -----------------| ------------------|--------------|------------------| -------------|------------------ |
+| User 0 (DLT=147) | nexxtender.cdrr   | 0            |                  | 0            |                   |
+| User 1 (DLT=148) | nexxtender.ccdtr  | 0            |                  | 0            |                   |
+| User 2 (DLT=149) | nexxtender.gde    | 0            |                  | 0            |                   |
+| User 3 (DLT=150) | nexxtender.gdm    | 0            |                  | 0            |                   |
+
+## Converting files
+
+The record files created by Gaai need to be converted to pcap files before they can be used by Wireshark.
+Use the `ConvertRecordsToPcap.sh` bash shell script to convert each file.
+It takes one argument: the input file name.
+````
+  ./ConvertRecordsToPcap.sh 2303-00005-E3_CDR_20260703110707.txt 
+````
+
+It will create a pcap file with the same name and in the same directory as the inputfile, but with an `.pcap` extension.
+This pcap file can be opened in Wirsehark using File->Open.
+
+
+
+
 
 # Links
 
