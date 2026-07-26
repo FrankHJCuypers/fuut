@@ -834,16 +834,203 @@ do
     end
 end
 -------------------------------------------------------------------------------
+-- Generic Data Characteristic - event - Authorization Status Updated
+-------------------------------------------------------------------------------
+local p_nexxt_gdea = Proto("nexxtender.gdea", "Nexxtender Generic Data: Event: Authorization Status Updated")
+
+do
+    local authorizationStatusValues = {
+        [0x02] = "Authorized",
+        [0x08] = "Default (RFU1)",
+        [0x10] = "Paused",
+        [0x20] = "MAX",
+        [0x40] = "ECO",
+        [0x80] = "Charging Stopped (RFU2)"
+    }
+
+    local f_gdea_newAuthorizationStatus = ProtoField.uint8("nexxtender.gdea.NewAuthorizationStatus", "NewAuthorizationStatus", base.HEX, authorizationStatusValues)
+    local f_gdea_uid = ProtoField.bytes("nexxtender.gdea.uid", "UID")
+
+    p_nexxt_gdea.fields = {
+        f_gdea_newAuthorizationStatus,
+        f_gdea_uid
+    }
+
+    function p_nexxt_gdea.dissector(buf, pinfo, tree)
+        length = buf:len()
+        if length ~= 12 then
+            return
+        end
+        pinfo.cols.protocol = p_nexxt_gdea.name
+        local subtree = tree:add(p_nexxt_gdea, buf())
+        subtree:add_le(f_gdea_newAuthorizationStatus,buf(0,1))
+        subtree:add_le(f_gdea_uid, buf(1, 11))
+    end
+end
+
+-------------------------------------------------------------------------------
+-- Generic Data Characteristic - event - Discriminator Updated
+-------------------------------------------------------------------------------
+local p_nexxt_gded = Proto("nexxtender.gded", "Nexxtender Generic Data: Event: Discriminator Updated")
+
+do
+    local discriminatorValues = {
+        [0x00] = "STOPPED",
+        [0x01] = "STARTED",
+        [0x02] = "CHARGING"
+        
+    }
+
+    local f_gded_oldDiscriminator = ProtoField.uint8("nexxtender.gded.OldDescriminator", "OldDescriminator", base.HEX, discriminatorValues) 
+    local f_gded_newDiscriminator = ProtoField.uint8("nexxtender.gded.NewDescriminator", "NewDescriminator", base.HEX, discriminatorValues) 
+    local f_gded_rfu = ProtoField.bytes("nexxtender.gded.RFU", "RFU")
+
+    p_nexxt_gded.fields = {
+        f_gded_oldDiscriminator,
+        f_gded_newDiscriminator,
+        f_gded_rfu
+    }
+
+    function p_nexxt_gded.dissector(buf, pinfo, tree)
+        length = buf:len()
+        if length ~= 12 then
+            return
+        end
+        pinfo.cols.protocol = p_nexxt_gded.name
+        local subtree = tree:add(p_nexxt_gded, buf())
+        subtree:add_le(f_gded_oldDiscriminator,buf(0,1))
+        subtree:add_le(f_gded_newDiscriminator,buf(1,1))
+        subtree:add_le(f_gded_rfu, buf(2, 10))
+    end
+end
+
+-------------------------------------------------------------------------------
+-- Generic Data Characteristic - event - Badge Updated
+-------------------------------------------------------------------------------
+local p_nexxt_gdeb = Proto("nexxtender.gdeb", "Nexxtender Generic Data: Event: Badge Updated")
+
+do
+    local badgeOperationValues = {
+        [0x01] = "Badge Added Default",
+        [0x02] = "Badge Added MAX",
+        [0x04] = "Badge Deleted"
+        
+    }
+
+    local f_gdeb_badgeOperation = ProtoField.uint8("nexxtender.gdeb.BadgeOperation", "BadgeOperation", base.HEX, badgeOperationValues) 
+    local f_gdeb_uid = ProtoField.bytes("nexxtender.gdeb.UID", "UID")
+
+    p_nexxt_gdeb.fields = {
+        f_gdeb_badgeOperation,
+        f_gdeb_uid
+    }
+
+    function p_nexxt_gdeb.dissector(buf, pinfo, tree)
+        length = buf:len()
+        if length ~= 12 then
+            return
+        end
+        pinfo.cols.protocol = p_nexxt_gdeb.name
+        local subtree = tree:add(p_nexxt_gdeb, buf())
+        subtree:add_le(f_gdeb_badgeOperation,buf(0,1))
+        subtree:add_le(f_gdeb_uid, buf(1, 11))
+    end
+end
+
+-------------------------------------------------------------------------------
+-- Generic Data Characteristic - event - Configuration Updated
+-------------------------------------------------------------------------------
+local p_nexxt_gdec = Proto("nexxtender.gdec", "Nexxtender Generic Data: Event: Configuration Updated")
+
+do
+    local configurationFieldValues = {
+        [0x01] = "mode",
+        [0x02] = "maxGrid",
+        [0x03] = "safe",
+        [0x04] = "touWeekStart",
+        [0x05] = "touWeekEnd",
+        [0x06] = "touWeekendStart",
+        [0x07] = "touWeekendEnd",
+        [0x08] = "maxDevice",
+        [0x09] = "networkType"
+        
+    }
+
+    local f_gdec_configField = ProtoField.uint8("nexxtender.gdec.ConfigField", "ConfigField", base.HEX, configurationFieldValues) 
+    local f_gdec_oldValue = ProtoField.uint32("nexxtender.gdec.OldValue", "OldValue", base.HEX)
+    local f_gdec_newValue = ProtoField.uint32("nexxtender.gdec.NewValue", "NewValue", base.HEX)
+    local f_gdec_rfu = ProtoField.bytes("nexxtender.gdec.RFU", "RFU")
+
+    p_nexxt_gdec.fields = {
+        f_gdec_configField,
+        f_gdec_oldValue,
+        f_gdec_newValue,
+        f_gdec_rfu
+    }
+
+    function p_nexxt_gdec.dissector(buf, pinfo, tree)
+        length = buf:len()
+        if length ~= 12 then
+            return
+        end
+        pinfo.cols.protocol = p_nexxt_gdec.name
+        local subtree = tree:add(p_nexxt_gdec, buf())
+        subtree:add_le(f_gdec_configField,buf(0,1))
+        subtree:add_le(f_gdec_oldValue, buf(1, 4))
+        subtree:add_le(f_gdec_newValue, buf(5, 4))
+        subtree:add_le(f_gdec_rfu, buf(9, 3))
+    end
+end
+
+-------------------------------------------------------------------------------
+-- Generic Data Characteristic - event - Fault
+-------------------------------------------------------------------------------
+local p_nexxt_gdef = Proto("nexxtender.gdef", "Nexxtender Generic Data: Event: Fault")
+
+do
+    local f_gdef_unknown = ProtoField.bytes("nexxtender.gdef.Unknown", "Unknown") 
+
+    p_nexxt_gdef.fields = {
+        f_gdef_unknown,
+    }
+
+    function p_nexxt_gdef.dissector(buf, pinfo, tree)
+        length = buf:len()
+        if length ~= 12 then
+            return
+        end
+        pinfo.cols.protocol = p_nexxt_gdef.name
+        local subtree = tree:add(p_nexxt_gdef, buf())
+        subtree:add_le(f_gdef_unknown, buf(0, 12))
+    end
+end
+
+
+-------------------------------------------------------------------------------
 -- Generic Data Characteristic - event
 -------------------------------------------------------------------------------
 local p_nexxt_gde = Proto("nexxtender.gde", "Nexxtender Generic Data: Event")
 
 do
+    local eventType = {
+        [0x01] = "Authorization Status Updated",
+        [0x02] = "Discriminator Updated",
+        [0x03] = "Badge Updated",
+        [0x04] = "Configuration Updated",
+        [0x06] = "Fault"
+    }
+
+    local gdeDissectors = {
+        [0x01] = p_nexxt_gdea.dissector,
+        [0x02] = p_nexxt_gded.dissector,
+        [0x03] = p_nexxt_gdeb.dissector,
+        [0x04] = p_nexxt_gdec.dissector,
+        [0x06] = p_nexxt_gdef.dissector,
+    }
+
     local f_gde_eventTime = ProtoField.absolute_time("nexxtender.gde.EventTime", "EventTime", base.LOCAL)
+    local f_gde_eventType = ProtoField.uint8("nexxtender.gde.EventType", "EventType", base.HEX, eventType)
     local f_gde_unknown1 = ProtoField.uint8("nexxtender.gde.unknown1", "Unknown1", base.HEX)
-    local f_gde_unknown2 = ProtoField.uint8("nexxtender.gde.unknown2", "Unknown2", base.HEX)
-    local f_gde_unknown3 = ProtoField.uint8("nexxtender.gde.unknown3", "Unknown3", base.HEX)
-    local f_gde_data = ProtoField.bytes("nexxtender.gde.data", "Data")
     local f_gde_crc16 = ProtoField.uint16("nexxtender.gde.crc16", "crc16", base.HEX)
 
     local f_gde_crcIncorrect =
@@ -851,10 +1038,8 @@ do
 
     p_nexxt_gde.fields = {
         f_gde_eventTime,
+        f_gde_eventType,
         f_gde_unknown1,
-        f_gde_unknown2,
-        f_gde_unknown3,
-        f_gde_data,
         f_gde_crc16
     }
 
@@ -867,13 +1052,18 @@ do
         if length ~= 20 then
             return
         end
-        pinfo.cols.protocol = p_nexxt_gde.name
+        -- pinfo.cols.protocol = p_nexxt_gde.name
         local subtree = tree:add(p_nexxt_gde, buf())
         subtree:add_le(f_gde_eventTime, buf(0, 4))
-        subtree:add_le(f_gde_unknown1, buf(4, 1))
-        subtree:add_le(f_gde_unknown2, buf(5, 1))
-        subtree:add_le(f_gde_unknown3, buf(6, 1))
-        subtree:add_le(f_gde_data, buf(7, 11))
+        local eventType = buf:bytes(4,1):le_uint()
+        subtree:add_le(f_gde_eventType, buf(4, 1))
+        subtree:add_le(f_gde_unknown1, buf(5, 1))
+        
+        local dissector = gdeDissectors[eventType]
+        if dissector ~= nil then
+            --pinfo.cols.info:append(" [" .. genericOperationValues[operationType] .. "]")
+            dissector:call(buf(6,12):tvb(), pinfo, tree)
+        end
         local treeitem = subtree:add_le(f_gde_crc16, buf(18, 2))
         local computedCrc = crc16_modbus(buf:bytes(), 0, 18)
         local receivedCrc = buf:bytes(18, 2):le_uint()
@@ -882,6 +1072,7 @@ do
         end
     end
 end
+
 -------------------------------------------------------------------------------
 -- Generic Data Characteristic - metrics
 -------------------------------------------------------------------------------
@@ -889,9 +1080,17 @@ local p_nexxt_gdm = Proto("nexxtender.gdm", "Nexxtender Generic Data: Metrics")
 
 do
     local f_gdm_unknown = ProtoField.bytes("nexxtender.gdm.unknown", "Unknown")
+    local f_gdm_metricTime = ProtoField.absolute_time("nexxtender.gdm.MetricTime", "MetricTime", base.LOCAL)
+    local f_gdm_crc16 = ProtoField.uint16("nexxtender.gdm.crc16", "crc16", base.HEX)
 
     p_nexxt_gdm.fields = {
-        f_gdm_unknown
+        f_gdm_metricTime,
+        f_gdm_unknown,
+        f_gdm_crc16
+    }
+
+    p_nexxt_gdm.experts = {
+        f_gdm_crcIncorrect
     }
 
     function p_nexxt_gdm.dissector(buf, pinfo, tree)
@@ -901,7 +1100,14 @@ do
         end
         pinfo.cols.protocol = p_nexxt_gdm.name
         local subtree = tree:add(p_nexxt_gdm, buf())
-        subtree:add_le(f_gdm_unknown, buf())
+        subtree:add_le(f_gdm_metricTime, buf(0, 4))
+        subtree:add_le(f_gdm_unknown, buf(4,38))
+        local treeitem = subtree:add_le(f_gdm_crc16, buf(42, 2))
+        local computedCrc = crc16_modbus(buf:bytes(), 0, 42)
+        local receivedCrc = buf:bytes(42, 2):le_uint()
+        if (receivedCrc ~= computedCrc) then
+            treeitem:add_proto_expert_info(f_gdm_crcIncorrect, string.format("Expected CRC value 0x%04x", computedCrc))
+        end
     end
 end
 -------------------------------------------------------------------------------
