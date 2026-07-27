@@ -1079,13 +1079,39 @@ end
 local p_nexxt_gdm = Proto("nexxtender.gdm", "Nexxtender Generic Data: Metrics")
 
 do
-    local f_gdm_unknown = ProtoField.bytes("nexxtender.gdm.unknown", "Unknown")
     local f_gdm_metricTime = ProtoField.absolute_time("nexxtender.gdm.MetricTime", "MetricTime", base.LOCAL)
+    local f_gdm_unknown1 = ProtoField.bytes("nexxtender.gdm.Unknown1", "Unknown1")
+    local f_gdm_voltage = ProtoField.uint8("nexxtender.gdm.Voltage", "Voltage", base.DEC) 
+    local f_gdm_unknown2 = ProtoField.bytes("nexxtender.gdm.Unknown2", "Unknown2")
+    local f_gdm_iavailablepeak = ProtoField.uint8("nexxtender.gdm.IAvailablePeak", "IAvailablePeak", base.DEC) 
+    local f_gdm_iavailableaverage = ProtoField.uint8("nexxtender.gdm.IAvailableAverage", "IAvailableAverage", base.DEC) 
+    local f_gdm_unknown3 = ProtoField.bytes("nexxtender.gdm.Unknown3", "Unknown3") 
+    local f_gdm_carpeakp = ProtoField.int32("nexxtender.gdm.CarPeakP", "Car Peak Power", base.DEC) 
+    local f_gdm_caraveragep = ProtoField.int32("nexxtender.gdm.CarAverageP", "Car Average power", base.DEC) 
+    local f_gdm_gridpeakp = ProtoField.int32("nexxtender.gdm.GridPeakP", "Grid Peak Power", base.DEC) 
+    local f_gdm_gridaveragep = ProtoField.int32("nexxtender.gdm.GridAverageP", "Grid Average Power", base.DEC) 
+    local f_gdm_unknown8 = ProtoField.int16("nexxtender.gdm.Unknown8", "Grid Unknown8", base.DEC) 
+    local f_gdm_unknown11 = ProtoField.bytes("nexxtender.gdm.Unknown11", "Unknown11") 
+    local f_gdm_unknown9 = ProtoField.bytes("nexxtender.gdm.Unknown9", "Unknown9") 
+    local f_gdm_unknown10 = ProtoField.bytes("nexxtender.gdm.Unknown10", "Unknown10") 
     local f_gdm_crc16 = ProtoField.uint16("nexxtender.gdm.crc16", "crc16", base.HEX)
 
     p_nexxt_gdm.fields = {
         f_gdm_metricTime,
-        f_gdm_unknown,
+        f_gdm_unknown1,
+        f_gdm_voltage,
+        f_gdm_unknown2,
+        f_gdm_iavailablepeak,
+        f_gdm_iavailableaverage,
+        f_gdm_unknown3,
+        f_gdm_carpeakp,
+        f_gdm_caraveragep,
+        f_gdm_gridpeakp,
+        f_gdm_gridaveragep,
+        f_gdm_unknown8,
+        f_gdm_unknown9,
+        f_gdm_unknown10,
+        f_gdm_unknown11,
         f_gdm_crc16
     }
 
@@ -1101,8 +1127,21 @@ do
         pinfo.cols.protocol = p_nexxt_gdm.name
         local subtree = tree:add(p_nexxt_gdm, buf())
         subtree:add_le(f_gdm_metricTime, buf(0, 4))
-        subtree:add_le(f_gdm_unknown, buf(4,38))
-        local treeitem = subtree:add_le(f_gdm_crc16, buf(42, 2))
+        subtree:add_le(f_gdm_unknown1, buf(4,4))
+        subtree:add_packet_field(f_gdm_voltage, buf(8, 1), ENC_LITTLE_ENDIAN, "V")
+        subtree:add_le(f_gdm_unknown2, buf(9,3))
+        subtree:add_packet_field(f_gdm_iavailablepeak, buf(12, 1), ENC_LITTLE_ENDIAN, "A")
+        subtree:add_packet_field(f_gdm_iavailableaverage, buf(13, 1), ENC_LITTLE_ENDIAN, "A")
+        subtree:add_le(f_gdm_unknown3, buf(14,2))
+        subtree:add_packet_field(f_gdm_carpeakp, buf(16, 4), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_packet_field(f_gdm_caraveragep, buf(20, 4), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_packet_field(f_gdm_gridpeakp, buf(24, 4), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_packet_field(f_gdm_gridaveragep, buf(28, 4), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_packet_field(f_gdm_unknown8, buf(32, 2), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_le(f_gdm_unknown11, buf(34, 2))
+        subtree:add_le(f_gdm_unknown9, buf(36,4))
+        subtree:add_le(f_gdm_unknown10, buf(40,2))
+                local treeitem = subtree:add_le(f_gdm_crc16, buf(42, 2))
         local computedCrc = crc16_modbus(buf:bytes(), 0, 42)
         local receivedCrc = buf:bytes(42, 2):le_uint()
         if (receivedCrc ~= computedCrc) then
