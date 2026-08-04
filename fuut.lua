@@ -1083,13 +1083,16 @@ do
     local f_gdm_unknown1 = ProtoField.bytes("nexxtender.gdm.Unknown1", "Unknown1")
     local f_gdm_voltage = ProtoField.uint8("nexxtender.gdm.Voltage", "Voltage", base.DEC) 
     local f_gdm_unknown2 = ProtoField.bytes("nexxtender.gdm.Unknown2", "Unknown2")
-    local f_gdm_iavailablepeak = ProtoField.uint8("nexxtender.gdm.IAvailablePeak", "IAvailablePeak", base.DEC) 
-    local f_gdm_iavailableaverage = ProtoField.uint8("nexxtender.gdm.IAvailableAverage", "IAvailableAverage", base.DEC) 
+    local f_gdm_iavailablemax = ProtoField.uint8("nexxtender.gdm.IAvailableMax", "IAvailableMax", base.DEC) 
+    local f_gdm_iavailablemin = ProtoField.uint8("nexxtender.gdm.IAvailableMin", "IAvailableMin", base.DEC) 
+    -- The value slowly increases during charging and decreases afterwards
+    local f_gdm_temperature = ProtoField.uint8("nexxtender.gdm.Temperature", "Temperature?", base.DEC) 
+    -- Always 0x00?
     local f_gdm_unknown3 = ProtoField.bytes("nexxtender.gdm.Unknown3", "Unknown3") 
-    local f_gdm_carpeakp = ProtoField.int32("nexxtender.gdm.CarPeakP", "Car Peak Power", base.DEC) 
-    local f_gdm_caraveragep = ProtoField.int32("nexxtender.gdm.CarAverageP", "Car Average power", base.DEC) 
-    local f_gdm_gridpeakp = ProtoField.int32("nexxtender.gdm.GridPeakP", "Grid Peak Power", base.DEC) 
-    local f_gdm_gridaveragep = ProtoField.int32("nexxtender.gdm.GridAverageP", "Grid Average Power", base.DEC) 
+    local f_gdm_carpowermax = ProtoField.int32("nexxtender.gdm.CarPowerMax", "Car Power Max", base.DEC) 
+    local f_gdm_carpowermin = ProtoField.int32("nexxtender.gdm.CarPowerMin", "Car Power Min", base.DEC) 
+    local f_gdm_gridpowermax = ProtoField.int32("nexxtender.gdm.GridPowerMax", "Grid Power Max", base.DEC) 
+    local f_gdm_gridpowermin = ProtoField.int32("nexxtender.gdm.GridPowerMin", "Grid Power Min", base.DEC) 
     local f_gdm_unknown8 = ProtoField.int16("nexxtender.gdm.Unknown8", "Grid Unknown8", base.DEC) 
     local f_gdm_unknown11 = ProtoField.bytes("nexxtender.gdm.Unknown11", "Unknown11") 
     local f_gdm_unknown9 = ProtoField.bytes("nexxtender.gdm.Unknown9", "Unknown9") 
@@ -1101,13 +1104,14 @@ do
         f_gdm_unknown1,
         f_gdm_voltage,
         f_gdm_unknown2,
-        f_gdm_iavailablepeak,
-        f_gdm_iavailableaverage,
+        f_gdm_iavailablemax,
+        f_gdm_iavailablemin,
+        f_gdm_temperature,
         f_gdm_unknown3,
-        f_gdm_carpeakp,
-        f_gdm_caraveragep,
-        f_gdm_gridpeakp,
-        f_gdm_gridaveragep,
+        f_gdm_carpowermax,
+        f_gdm_carpowermin,
+        f_gdm_gridpowermax,
+        f_gdm_gridpowermin,
         f_gdm_unknown8,
         f_gdm_unknown9,
         f_gdm_unknown10,
@@ -1130,13 +1134,14 @@ do
         subtree:add_le(f_gdm_unknown1, buf(4,4))
         subtree:add_packet_field(f_gdm_voltage, buf(8, 1), ENC_LITTLE_ENDIAN, "V")
         subtree:add_le(f_gdm_unknown2, buf(9,3))
-        subtree:add_packet_field(f_gdm_iavailablepeak, buf(12, 1), ENC_LITTLE_ENDIAN, "A")
-        subtree:add_packet_field(f_gdm_iavailableaverage, buf(13, 1), ENC_LITTLE_ENDIAN, "A")
-        subtree:add_le(f_gdm_unknown3, buf(14,2))
-        subtree:add_packet_field(f_gdm_carpeakp, buf(16, 4), ENC_LITTLE_ENDIAN, "W")
-        subtree:add_packet_field(f_gdm_caraveragep, buf(20, 4), ENC_LITTLE_ENDIAN, "W")
-        subtree:add_packet_field(f_gdm_gridpeakp, buf(24, 4), ENC_LITTLE_ENDIAN, "W")
-        subtree:add_packet_field(f_gdm_gridaveragep, buf(28, 4), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_packet_field(f_gdm_iavailablemax, buf(12, 1), ENC_LITTLE_ENDIAN, "A")
+        subtree:add_packet_field(f_gdm_iavailablemin, buf(13, 1), ENC_LITTLE_ENDIAN, "A")
+        subtree:add_packet_field(f_gdm_temperature, buf(14, 1), ENC_LITTLE_ENDIAN, "°C")
+        subtree:add_le(f_gdm_unknown3, buf(15,1))
+        subtree:add_packet_field(f_gdm_carpowermax, buf(16, 4), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_packet_field(f_gdm_carpowermin, buf(20, 4), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_packet_field(f_gdm_gridpowermax, buf(24, 4), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_packet_field(f_gdm_gridpowermin, buf(28, 4), ENC_LITTLE_ENDIAN, "W")
         subtree:add_packet_field(f_gdm_unknown8, buf(32, 2), ENC_LITTLE_ENDIAN, "W")
         subtree:add_le(f_gdm_unknown11, buf(34, 2))
         subtree:add_le(f_gdm_unknown9, buf(36,4))
