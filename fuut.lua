@@ -168,7 +168,7 @@ do
         subtree:add_packet_field(f_cgd_l1, buf(4, 2), ENC_LITTLE_ENDIAN, "dA")
         subtree:add_packet_field(f_cgd_l2, buf(6, 2), ENC_LITTLE_ENDIAN, "dA")
         subtree:add_packet_field(f_cgd_l3, buf(8, 2), ENC_LITTLE_ENDIAN, "dA")
-        subtree:add_packet_field(f_cgd_consumed, buf(10, 2), ENC_LITTLE_ENDIAN, "Wh")
+        subtree:add_packet_field(f_cgd_consumed, buf(10, 2), ENC_LITTLE_ENDIAN, "cWh")
         subtree:add_packet_field(f_cgd_interval, buf(12, 2), ENC_LITTLE_ENDIAN, "s")
         local treeitem = subtree:add_le(f_cgd_crc16, buf(14, 2))
 
@@ -1093,7 +1093,7 @@ do
     local f_gdm_carpowermin = ProtoField.int32("nexxtender.gdm.CarPowerMin", "Car Power Min", base.DEC) 
     local f_gdm_gridpowermax = ProtoField.int32("nexxtender.gdm.GridPowerMax", "Grid Power Max", base.DEC) 
     local f_gdm_gridpowermin = ProtoField.int32("nexxtender.gdm.GridPowerMin", "Grid Power Min", base.DEC) 
-    local f_gdm_unknown8 = ProtoField.int16("nexxtender.gdm.Unknown8", "Grid Unknown8", base.DEC) 
+    local f_gdm_consumed = ProtoField.int16("nexxtender.gdm.Consumed", "Grid Consumed", base.DEC) 
     local f_gdm_unknown11 = ProtoField.bytes("nexxtender.gdm.Unknown11", "Unknown11") 
     local f_gdm_unknown9 = ProtoField.bytes("nexxtender.gdm.Unknown9", "Unknown9") 
     local f_gdm_unknown10 = ProtoField.bytes("nexxtender.gdm.Unknown10", "Unknown10") 
@@ -1112,7 +1112,7 @@ do
         f_gdm_carpowermin,
         f_gdm_gridpowermax,
         f_gdm_gridpowermin,
-        f_gdm_unknown8,
+        f_gdm_consumed,
         f_gdm_unknown9,
         f_gdm_unknown10,
         f_gdm_unknown11,
@@ -1142,7 +1142,7 @@ do
         subtree:add_packet_field(f_gdm_carpowermin, buf(20, 4), ENC_LITTLE_ENDIAN, "W")
         subtree:add_packet_field(f_gdm_gridpowermax, buf(24, 4), ENC_LITTLE_ENDIAN, "W")
         subtree:add_packet_field(f_gdm_gridpowermin, buf(28, 4), ENC_LITTLE_ENDIAN, "W")
-        subtree:add_packet_field(f_gdm_unknown8, buf(32, 2), ENC_LITTLE_ENDIAN, "W")
+        subtree:add_packet_field(f_gdm_consumed, buf(32, 2), ENC_LITTLE_ENDIAN, "cWh")
         subtree:add_le(f_gdm_unknown11, buf(34, 2))
         subtree:add_le(f_gdm_unknown9, buf(36,4))
         subtree:add_le(f_gdm_unknown10, buf(40,2))
