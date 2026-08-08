@@ -1078,44 +1078,64 @@ end
 -------------------------------------------------------------------------------
 local p_nexxt_gdm = Proto("nexxtender.gdm", "Nexxtender Generic Data: Metrics")
 
+
 do
+   local chargingStatus = {
+        [0x40] = "CHARGING",
+        [0xC0] = "NOT CHARGING",
+    }
+
     local f_gdm_metricTime = ProtoField.absolute_time("nexxtender.gdm.MetricTime", "MetricTime", base.LOCAL)
     local f_gdm_unknown1 = ProtoField.bytes("nexxtender.gdm.Unknown1", "Unknown1")
-    local f_gdm_voltage = ProtoField.uint8("nexxtender.gdm.Voltage", "Voltage", base.DEC) 
-    local f_gdm_unknown2 = ProtoField.bytes("nexxtender.gdm.Unknown2", "Unknown2")
+    local f_gdm_unknown2 = ProtoField.uint8("nexxtender.gdm.Unknown2", "Unknown2", base.HEX, NULL, 0xC0)
+    local f_gdm_carcurrentmax = ProtoField.uint8("nexxtender.gdm.CarCurrentMax", "Car Current Max", base.DEC, NULL, 0x3F)
+    local f_gdm_unknown3 = ProtoField.uint8("nexxtender.gdm.Unknown3", "Unknown3",  base.HEX, NULL, 0xC0)
+    local f_gdm_carcurrentmin = ProtoField.uint8("nexxtender.gdm.CarCurrentMin", "Car Current Min", base.DEC, NULL, 0x3F)
+    local f_gdm_gridvoltage = ProtoField.uint8("nexxtender.gdm.GridVoltage", "Grid Voltage", base.DEC) 
+    local f_gdm_unknown4 = ProtoField.uint8("nexxtender.gdm.Unknown4", "Unknown4", base.HEX)
+    local f_gdm_carvoltage = ProtoField.uint8("nexxtender.gdm.CarVoltage", "Car Voltage", base.DEC) 
+    local f_gdm_chargingstatus = ProtoField.uint8("nexxtender.gdm.ChargingStatus", "Charging Status", base.HEX, chargingStatus) 
     local f_gdm_iavailablemax = ProtoField.uint8("nexxtender.gdm.IAvailableMax", "IAvailableMax", base.DEC) 
     local f_gdm_iavailablemin = ProtoField.uint8("nexxtender.gdm.IAvailableMin", "IAvailableMin", base.DEC) 
     -- The value slowly increases during charging and decreases afterwards
     local f_gdm_temperature = ProtoField.uint8("nexxtender.gdm.Temperature", "Temperature?", base.DEC) 
     -- Always 0x00?
-    local f_gdm_unknown3 = ProtoField.bytes("nexxtender.gdm.Unknown3", "Unknown3") 
+    local f_gdm_unknown5 = ProtoField.bytes("nexxtender.gdm.Unknown5", "Unknown5") 
     local f_gdm_carpowermax = ProtoField.int32("nexxtender.gdm.CarPowerMax", "Car Power Max", base.DEC) 
     local f_gdm_carpowermin = ProtoField.int32("nexxtender.gdm.CarPowerMin", "Car Power Min", base.DEC) 
     local f_gdm_gridpowermax = ProtoField.int32("nexxtender.gdm.GridPowerMax", "Grid Power Max", base.DEC) 
     local f_gdm_gridpowermin = ProtoField.int32("nexxtender.gdm.GridPowerMin", "Grid Power Min", base.DEC) 
-    local f_gdm_consumed = ProtoField.int16("nexxtender.gdm.Consumed", "Grid Consumed", base.DEC) 
-    local f_gdm_unknown11 = ProtoField.bytes("nexxtender.gdm.Unknown11", "Unknown11") 
-    local f_gdm_unknown9 = ProtoField.bytes("nexxtender.gdm.Unknown9", "Unknown9") 
-    local f_gdm_unknown10 = ProtoField.bytes("nexxtender.gdm.Unknown10", "Unknown10") 
+    local f_gdm_gridconsumed = ProtoField.int16("nexxtender.gdm.GridConsumed", "Grid Consumed", base.DEC) 
+    local f_gdm_unknown6 = ProtoField.bytes("nexxtender.gdm.Unknown6", "Unknown6") 
+    local f_gdm_promillemax = ProtoField.int16("nexxtender.gdm.PromilleMax", "Promille Max", base.DEC) 
+    local f_gdm_promillemin = ProtoField.int16("nexxtender.gdm.PromilleMin", "Promille Min", base.DEC) 
+    local f_gdm_unknown7 = ProtoField.bytes("nexxtender.gdm.Unknown7", "Unknown7") 
     local f_gdm_crc16 = ProtoField.uint16("nexxtender.gdm.crc16", "crc16", base.HEX)
 
     p_nexxt_gdm.fields = {
         f_gdm_metricTime,
         f_gdm_unknown1,
-        f_gdm_voltage,
         f_gdm_unknown2,
+        f_gdm_carcurrentmax,
+        f_gdm_unknown3,
+        f_gdm_carcurrentmin,
+        f_gdm_gridvoltage,
+        f_gdm_unknown4,
+        f_gdm_carvoltage,
+        f_gdm_chargingstatus,
         f_gdm_iavailablemax,
         f_gdm_iavailablemin,
         f_gdm_temperature,
-        f_gdm_unknown3,
+        f_gdm_unknown5,
         f_gdm_carpowermax,
         f_gdm_carpowermin,
         f_gdm_gridpowermax,
         f_gdm_gridpowermin,
-        f_gdm_consumed,
-        f_gdm_unknown9,
-        f_gdm_unknown10,
-        f_gdm_unknown11,
+        f_gdm_gridconsumed,
+        f_gdm_unknown6,
+        f_gdm_promillemax,
+        f_gdm_promillemin,
+        f_gdm_unknown7,
         f_gdm_crc16
     }
 
@@ -1131,22 +1151,29 @@ do
         pinfo.cols.protocol = p_nexxt_gdm.name
         local subtree = tree:add(p_nexxt_gdm, buf())
         subtree:add_le(f_gdm_metricTime, buf(0, 4))
-        subtree:add_le(f_gdm_unknown1, buf(4,4))
-        subtree:add_packet_field(f_gdm_voltage, buf(8, 1), ENC_LITTLE_ENDIAN, "V")
-        subtree:add_le(f_gdm_unknown2, buf(9,3))
+        subtree:add_le(f_gdm_unknown1, buf(4,2))
+        subtree:add_le(f_gdm_unknown2, buf(6,1))
+        subtree:add_packet_field(f_gdm_carcurrentmax, buf(6, 1), ENC_LITTLE_ENDIAN, "A")
+        subtree:add_le(f_gdm_unknown3, buf(7,1))
+        subtree:add_packet_field(f_gdm_carcurrentmin, buf(7, 1), ENC_LITTLE_ENDIAN, "A")
+        subtree:add_packet_field(f_gdm_gridvoltage, buf(8, 1), ENC_LITTLE_ENDIAN, "V")
+        subtree:add_le(f_gdm_unknown4, buf(9,1))
+        subtree:add_packet_field(f_gdm_carvoltage, buf(10, 1), ENC_LITTLE_ENDIAN, "V")
+        subtree:add_packet_field(f_gdm_chargingstatus, buf(11, 1), ENC_LITTLE_ENDIAN)
         subtree:add_packet_field(f_gdm_iavailablemax, buf(12, 1), ENC_LITTLE_ENDIAN, "A")
         subtree:add_packet_field(f_gdm_iavailablemin, buf(13, 1), ENC_LITTLE_ENDIAN, "A")
         subtree:add_packet_field(f_gdm_temperature, buf(14, 1), ENC_LITTLE_ENDIAN, "°C")
-        subtree:add_le(f_gdm_unknown3, buf(15,1))
+        subtree:add_le(f_gdm_unknown5, buf(15,1))
         subtree:add_packet_field(f_gdm_carpowermax, buf(16, 4), ENC_LITTLE_ENDIAN, "W")
         subtree:add_packet_field(f_gdm_carpowermin, buf(20, 4), ENC_LITTLE_ENDIAN, "W")
         subtree:add_packet_field(f_gdm_gridpowermax, buf(24, 4), ENC_LITTLE_ENDIAN, "W")
         subtree:add_packet_field(f_gdm_gridpowermin, buf(28, 4), ENC_LITTLE_ENDIAN, "W")
-        subtree:add_packet_field(f_gdm_consumed, buf(32, 2), ENC_LITTLE_ENDIAN, "cWh")
-        subtree:add_le(f_gdm_unknown11, buf(34, 2))
-        subtree:add_le(f_gdm_unknown9, buf(36,4))
-        subtree:add_le(f_gdm_unknown10, buf(40,2))
-                local treeitem = subtree:add_le(f_gdm_crc16, buf(42, 2))
+        subtree:add_packet_field(f_gdm_gridconsumed, buf(32, 2), ENC_LITTLE_ENDIAN, "cWh")
+        subtree:add_le(f_gdm_unknown6, buf(34, 2))
+        subtree:add_packet_field(f_gdm_promillemax, buf(36, 2), ENC_LITTLE_ENDIAN, "‰")
+        subtree:add_packet_field(f_gdm_promillemin, buf(38, 2), ENC_LITTLE_ENDIAN, "‰")
+        subtree:add_le(f_gdm_unknown7, buf(40,2))
+        local treeitem = subtree:add_le(f_gdm_crc16, buf(42, 2))
         local computedCrc = crc16_modbus(buf:bytes(), 0, 42)
         local receivedCrc = buf:bytes(42, 2):le_uint()
         if (receivedCrc ~= computedCrc) then
