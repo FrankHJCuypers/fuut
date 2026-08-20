@@ -230,7 +230,7 @@ it writes the loaded records in text files located on /data/data/be.cuypers_ghys
 These files can be accessed in Android Studio's Device Explorer.
 This Wireshark dissector can also dissect the contents of these files.
 The naming of these files is
-`<device serial number>_<type>_<timestamp>.txt` with
+`<device serial number>_<type>_<timestamp>.log` with
 
 - `<device serial number>` the serial number (SN) of the Nexxtender charger.
 - `<type>` the record types stored in the file: CDR, CCDT, EVENT or METRIC.
