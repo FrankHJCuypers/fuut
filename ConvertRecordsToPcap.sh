@@ -27,7 +27,9 @@ if [ -f "$1" ]; then
      ;;
   esac
   echo "Found DLTNum=$DLTNum" 
-  cat $1 | sed -e 's/.*://' | sed 's/.\{2\}/& /g'  | sed 's/^/000000 /' | text2pcap -l $DLTNum - "${1%.*}.pcap"
+  # Old format
+  # cat $1 | sed -e 's/.*://' | sed 's/.\{2\}/& /g'  | sed 's/^/000000 /' | text2pcap -l $DLTNum - "${1%.*}.pcap"
+  text2pcap -l $DLTNum -t"%Y-%m-%d %H:%M:%S" -r '^(?<dir>[<>])\s(?<time>\d+\-\d\d-\d\d\s\d+:\d\d:\d\d)\s(?<data>[0-9a-fA-F]+)$' $1 "${1%.*}.pcap"
 else 
   echo "$1 is not a file"
 fi

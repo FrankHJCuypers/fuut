@@ -226,15 +226,24 @@ This Wireshark dissector is primarily meant to be used on the protocol exchanged
 obtained by some form of sniffing. 
 
 When Gaai downloads CDR, CCDT, Event or Metric records from the Nexxtender charger,
-it writes the loaded records in text files located on /data/data/be.cuypers_ghys.gaai/files/DownloadedRecords.
-These files can be accessed in Android Studio's Device Explorer.
+it writes the loaded records in text files.
+Gaai lets you choose in which directory.
+
 This Wireshark dissector can also dissect the contents of these files.
+
 The naming of these files is
-`<device serial number>_<type>_<timestamp>.log` with
+`<device serial number>_<type>_<timestamp>.txt` with
 
 - `<device serial number>` the serial number (SN) of the Nexxtender charger.
 - `<type>` the record types stored in the file: CDR, CCDT, EVENT or METRIC.
 - `<timestamp>` indicating when the file was created by Gaai.
+
+There are several ways to transfer these files to a PC where you can use Wireshark to investigate them:
+- When running Gaai using Android Studio, locate the chosen directory in Android Studio's *Device Explorer*.
+  Select the files and chose *Save to*.
+- Locate the files in Android with the *Files* app. Select the files and choose *Share* and how to share it.
+- Connect the mobile phone to the PC over USB. Choose option *File transfer*.
+  Locate you phone in Windows Explorer, find the directory with the files and copy them to your PC.
 
 ## Preparing Wireshark 
 
@@ -249,7 +258,14 @@ Use the '+' to add the following 4 entries to the table
 | User 2 (DLT=149) | nexxtender.gde    | 0            |                  | 0            |                   |
 | User 3 (DLT=150) | nexxtender.gdm    | 0            |                  | 0            |                   |
 
-## Converting files
+## Concatenating record files
+
+If you regularly download records from the charger, you end up with many files.
+You can easily concatenate them using `cat`: `cat <device serial number>_<type>_[0-9]\*.txt > <device serial number>_<type>_all.txt`.
+The file expansion done by `cat` sorts all the files alphabetically, which keeps the correct chronology in our case.
+See also `ConcatenateRecords.s`.
+
+## Converting files to pcap
 
 The record files created by Gaai need to be converted to pcap files before they can be used by Wireshark.
 Use the `ConvertRecordsToPcap.sh` bash shell script to convert each file.
@@ -261,9 +277,12 @@ It takes one argument: the input file name.
 It will create a pcap file with the same name and in the same directory as the inputfile, but with an `.pcap` extension.
 This pcap file can be opened in Wireshark using File->Open.
 
+## Merging record types
 
-
-
+It is interesting to see all 4 record types simultanously in Wireshark.
+That better visualizes the relation between the record types.
+That can easily be done with Wireshark as explained in 
+[Merging Capture Files](https://www.wireshark.org/docs/wsug_html_chunked/ChIOMergeSection.html).
 
 # Links
 
