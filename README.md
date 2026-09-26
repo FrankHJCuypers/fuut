@@ -225,7 +225,7 @@ It adds dissectors to the *bluetooth.uid* table defined in *proto_reg_handoff_bt
 This Wireshark dissector is primarily meant to be used on the protocol exchanged between Mobile phone and Nexxtender charger,
 obtained by some form of sniffing. 
 
-When Gaai downloads CDR, CCDT, Event or Metric records from the Nexxtender charger,
+When Gaai downloads CDR, CCDT, Event or Metric records from the Nexxtender charger with the *Read Remaining Records* button,
 it writes the loaded records in text files.
 Gaai lets you choose in which directory.
 
