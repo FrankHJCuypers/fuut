@@ -279,10 +279,22 @@ This pcap file can be opened in Wireshark using File->Open.
 
 ## Merging record types
 
-It is interesting to see all 4 record types simultanously in Wireshark.
+It can be interesting to see all 4 record types simultaneous in Wireshark.
 That better visualizes the relation between the record types.
 That can easily be done with Wireshark as explained in 
 [Merging Capture Files](https://www.wireshark.org/docs/wsug_html_chunked/ChIOMergeSection.html).
+
+## Extracting charging sessions from CDR files to a CSV file
+
+Wireshark allows to create filters, specify visible columns and export results to CSV.
+tshark is the command line version of Wireshark.
+The `FilterCDRDateToCSV.sh` script is an example on how to extract a range of charging sessions to a CSV.
+Usage is as in
+````
+    ./FilterCDRDateToCSV.sh 2303-00005-E3_CDR_20260924202216.pcap 2026-09-01 2026-09-20 > ChargingSessions.csv
+````
+
+
 
 # Links
 
@@ -294,6 +306,8 @@ Useful information can be found at
 - [Creating a Wireshark dissector in Lua](https://mika-s.github.io/wireshark/lua/dissector/2017/11/04/creating-a-wireshark-dissector-in-lua-1.html)
 - [Gaai app project](https://frankhjcuypers.github.io/gaai/)
 - [Gaai app github](https://github.com/FrankHJCuypers/gaai)
+- [tshark](https://www.wireshark.org/docs/man-pages/tshark.html) is the terminal-based, 
+  command-line counterpart of the Wireshark graphical user interface (GUI) analyzer
 # License
 
 This project is licensed under the GNU AGPLv3 License. See the [LICENSE](LICENSE) file for details.
